@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/index.css';
 import Providers from '@/components/providers';
+import { Header } from '@/components/layout';
+import { satoshi } from '@/public/font';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,11 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${satoshi.className} antialiased`}>
         <Providers>
-          <div className='grid grid-rows-[auto_1fr] h-svh'>{children}</div>
+          <div className='grid grid-rows-[auto_1fr] h-svh'>
+            <Header />
+            {children}
+          </div>
         </Providers>
       </body>
     </html>
