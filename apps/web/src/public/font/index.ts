@@ -6,5 +6,9 @@ export const satoshi = localFont({
       path: './satoshi/Satoshi-Regular.otf',
       weight: '400',
     },
+     {
+      path: './satoshi/Satoshi-Medium.otf',
+      weight: '500',
+    },
   ],
 });

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/index.css';
 import Providers from '@/components/providers';
-import { Header } from '@/components/layout';
+import { Footer, Header } from '@/components/layout';
 import { satoshi } from '@/public/font';
 
 const geistSans = Geist({
@@ -32,6 +32,7 @@ export default function AuthLayout({
           <div className='grid grid-rows-[auto_1fr] h-svh'>
             <Header />
             {children}
+            <Footer />
           </div>
         </Providers>
       </body>

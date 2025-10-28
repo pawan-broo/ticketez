@@ -7,10 +7,14 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { motion } from 'framer-motion';
+import { cubicBezier, motion } from 'framer-motion';
 import Marquee from 'react-fast-marquee';
 
 export const Hero: React.FC = () => {
+  const title = 'Find next destination to visit';
+  const description =
+    'Introducing Titiesfy, an effortless ticket booking experience on your fingertips. Visit monuments while we take care of the hassle of bookings.';
+
   return (
     <div className='w-full h-screen flex flex-col '>
       <div className='flex w-full  flex-col h-full  items-center justify-center border-b'>
@@ -25,46 +29,68 @@ export const Hero: React.FC = () => {
           </div>
 
           <div className=' flex z-10 mt-10  cursor-pointer bg-background items-center gap-4 rounded-lg border px-4 py-1 pr-1'>
-            <p className='text-sm'>One click Booking</p>
+            <p className='text-sm'>#3 clicks Booking</p>
             <div className='bg-primary flex h-7 w-7 items-center justify-center rounded-sm duration-100'>
               <ArrowUpRight className='w-5 text-white' />
             </div>
           </div>
 
           <div className='flex flex-col items-center gap-2 justify-center'>
-            <div className='overflow-hidden h-14'>
-              <motion.p
-                initial={{ y: 40 }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.3 }}
-                className='text-primary font-flagfies overflow-hidden font-medium text-center text-[60px] leading-none'
-              >
-                Find next destination to visit
-              </motion.p>
-            </div>
-            <div>
-              <div className='overflow-hidden h-6'>
-                <motion.p
-                  initial={{ y: 40 }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.05 }}
-                  className='text-center text-lg  leading-tight'
-                >
-                  Introducing Titiesfy, an effortless ticket booking experience
-                  on your fingertips.
-                </motion.p>
-              </div>
-              <div className='overflow-hidden h-6'>
-                <motion.p
-                  initial={{ y: 40 }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.05 }}
-                  className='text-center text-lg  leading-tight'
-                >
-                  Visit monuments while we take care of the hassle of bookings.
-                </motion.p>
-              </div>
-            </div>
+            <p className='inline-flex flex-wrap justify-center  '>
+              {title.split(' ').map((value, index) => (
+                <span className='overflow-hidden' key={index}>
+                  <motion.span
+                    variants={{
+                      show: {
+                        y: '0',
+                      },
+                      hide: {
+                        y: '100%',
+                      },
+                    }}
+                    initial={{
+                      y: '100%',
+                    }}
+                    whileInView='show'
+                    transition={{
+                      duration: 0.5,
+                      ease: cubicBezier(0.7, 0.1, 0.01, 1),
+                    }}
+                    className='text-[60px] font-flagfies text-primary text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
+                  >
+                    {value}&nbsp;
+                  </motion.span>
+                </span>
+              ))}
+            </p>
+            <p className='inline-flex max-w-[700px] flex-wrap justify-center  '>
+              {description.split(' ').map((value, index) => (
+                <span className='overflow-hidden' key={index}>
+                  <motion.span
+                    variants={{
+                      show: {
+                        y: '0',
+                      },
+                      hide: {
+                        y: '100%',
+                      },
+                    }}
+                    initial={{
+                      y: '100%',
+                    }}
+                    whileInView='show'
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.1,
+                      ease: cubicBezier(0.7, 0.1, 0.01, 1),
+                    }}
+                    className='text-center text-lg  leading-tight relative inline-flex flex-wrap overflow-hidden  '
+                  >
+                    {value}&nbsp;
+                  </motion.span>
+                </span>
+              ))}
+            </p>
           </div>
 
           <div className='relative '>

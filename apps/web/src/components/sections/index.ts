@@ -1,0 +1,6 @@
+export * from "./Hero"
+export * from "./Vision"
+export * from "./PopularMonuments"
+export * from "./HowWeWork"
+export * from "./PopularMuseums"
+export * from "./Contact"

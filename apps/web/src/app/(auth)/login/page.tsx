@@ -1,59 +1,31 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { LoginSchema, type LoginSchemaType } from '@/utils/schema';
-
-// Schemas
 
 const Login: React.FC = () => {
-  const form = useForm({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-
-  const onSubmit = (data: LoginSchemaType) => {
-    console.log('Login:', data);
-    alert('Login successful!');
-  };
-
-  const handleGoogleLogin = () => {
-    console.log('Continue with Google');
-    alert('Google login clicked');
-  };
-
   return (
-    <div className='flex h-[calc(100vh-100px)] w-full flex-col items-center'>
-      <div className='container flex flex-col items-center gap-8 h-full border-x p-8'>
-        <div className='container h-[300px] border rounded-lg flex flex-col justify-center items-center gap-3 py-12'>
-          <section className='text-center leading-none'>
+    <div className='flex h-screen w-full flex-col items-center'>
+      <div className='container flex flex-col items-center gap-8 h-full border-x mt-[100px] p-8'>
+        <div className='container relative overflow-hidden h-full border rounded-lg flex flex-col justify-center items-center gap-6 py-12'>
+          <div className='w-full h-full absolute  top-0 left-0  grid grid-cols-16 grid-rows-8'>
+            {Array.from({ length: 128 }).map((_, index) => (
+              <div
+                key={index}
+                className='w-full h-full hover:bg-primary/5 border border-primary/2  duration-150 bg-transparent'
+              />
+            ))}
+          </div>
+          <div className='size-[50px] rounded-full bg-primary' />
+
+          <section className='flex flex-col items-center leading-none'>
             <h1 className='text-[40px] font-flagfies font-medium text-primary'>
               Welcome back!
             </h1>
-            <p className='text-lg '>Let&apos; continue where you left off</p>
+            <p className='text-lg'>Let&apos; continue where you left off.</p>
           </section>
 
-          <Button
-            // variant='outline'
-            className='w-[400px]'
-            // onClick={handleGoogleLogin}
-          >
+          <Button className='w-[400px] z-10' size='xl'>
             <svg className='mr-2 h-4 w-4' viewBox='0 0 24 24'>
               <path
                 d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
@@ -75,7 +47,6 @@ const Login: React.FC = () => {
             Continue with Google
           </Button>
         </div>
-        <div className='container h-full bg-primary/20 rounded-lg' />
       </div>
       <div className='flex h-[100px] w-full flex-col items-center border-t'>
         <div className='container h-full w-full border-x' />
