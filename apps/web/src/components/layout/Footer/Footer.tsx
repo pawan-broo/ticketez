@@ -4,7 +4,7 @@ import { footerLinks } from './data';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className='w-full  bg-primary  flex justify-center gap-8'>
+    <footer className='w-full  bg-primary h-fit flex justify-center gap-8'>
       <div className='container relative overflow-hidden border-x w-full border-secondary/10'>
         <div className='p-12 flex justify-between '>
           <section>
@@ -14,10 +14,10 @@ export const Footer: React.FC = () => {
               <span className='mt-0.5'>]</span>
             </p>
             <p className='text-[40px] text-background font-flagfies'>
-              hello@titiesfy.com
+              hello@ticketez.com
             </p>
             <section className='mt-2 flex items-center gap-5'>
-              <p className='text-sm text-background/50'>&copy; 2025 Titiesfy</p>
+              <p className='text-sm text-background/50'>&copy; 2025 Ticketez</p>
               <Link href='/' className='text-sm text-background/50'>
                 Privacy Policy
               </Link>

@@ -13,12 +13,26 @@ export const Contact: React.FC = () => {
   return (
     <div className='w-full flex flex-col '>
       <div className='flex w-full  flex-col h-full  items-center justify-center border-b'>
-        <div className='container flex flex-col relative overflow-hidden items-center gap-8 border-x h-full justify-center pt-20 p-12'>
-          <div className='w-full h-full absolute  top-0 left-0  grid grid-cols-15 grid-rows-4'>
-            {Array.from({ length: 60 }).map((_, index) => (
-              <div
+        <div className='container flex flex-col relative overflow-hidden items-center gap-5 border-x h-full justify-center pt-20 p-12'>
+          <p className='text-muted-foreground gap-2 hover:gap-5 duration-100 cursor-default leading-none flex items-center'>
+            <span className='mt-0.5'>[</span>
+            <span>Reach Out</span>
+            <span className='mt-0.5'>]</span>
+          </p>
+          <div className='w-full h-full absolute top-0  left-0 grid grid-cols-30 grid-rows-7'>
+            {Array.from({ length: 210 }).map((_, index) => (
+              <motion.div
                 key={index}
-                className='w-full h-full hover:bg-primary/5 border border-primary/2  duration-150 bg-transparent'
+                whileHover={{
+                  backgroundColor: 'oklch(0.4341 0.0392 41.9938 / 0.05)',
+                  transition: { duration: 0.5 },
+                }}
+                transition={{
+                  duration: 0.5,
+                  ease: cubicBezier(0.7, 0.1, 0.01, 1),
+                  delay: 0.5,
+                }}
+                className='w-full h-full border    border-primary/1'
               />
             ))}
           </div>

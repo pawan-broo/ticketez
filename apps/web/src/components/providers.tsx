@@ -16,6 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1,
+      allowNestedScroll: true,
     });
     function raf(time: number) {
       lenis.raf(time);

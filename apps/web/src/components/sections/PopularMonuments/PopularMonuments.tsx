@@ -11,7 +11,7 @@ export const PopularMonuments: React.FC = () => {
       <div className='container bg-primary flex flex-col  items-center gap-8 border-x h-full justify-center  py-[80px] px-12'>
         <p className='text-secondary gap-2 hover:gap-5 duration-100 cursor-default leading-none flex items-center'>
           <span className='mt-0.5'>[</span>
-          <span>Popular Destinations to Visit</span>
+          <span>Popular Monuments to Visit</span>
           <span className='mt-0.5'>]</span>
         </p>
 

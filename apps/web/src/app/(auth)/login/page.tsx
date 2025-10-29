@@ -2,17 +2,28 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { cubicBezier, motion } from 'framer-motion';
+import Link from 'next/link';
 
 const Login: React.FC = () => {
   return (
     <div className='flex h-screen w-full flex-col items-center'>
       <div className='container flex flex-col items-center gap-8 h-full border-x mt-[100px] p-8'>
         <div className='container relative overflow-hidden h-full border rounded-lg flex flex-col justify-center items-center gap-6 py-12'>
-          <div className='w-full h-full absolute  top-0 left-0  grid grid-cols-16 grid-rows-8'>
-            {Array.from({ length: 128 }).map((_, index) => (
-              <div
+          <div className='w-full h-full absolute  top-0 left-0  grid grid-cols-20 grid-rows-10'>
+            {Array.from({ length: 200 }).map((_, index) => (
+              <motion.div
                 key={index}
-                className='w-full h-full hover:bg-primary/5 border border-primary/2  duration-150 bg-transparent'
+                whileHover={{
+                  backgroundColor: 'oklch(0.4341 0.0392 41.9938 / 0.05)',
+                  transition: { duration: 0.5 },
+                }}
+                transition={{
+                  duration: 0.5,
+                  ease: cubicBezier(0.7, 0.1, 0.01, 1),
+                  delay: 0.5,
+                }}
+                className='w-full h-full border    border-primary/1'
               />
             ))}
           </div>
@@ -46,6 +57,9 @@ const Login: React.FC = () => {
             </svg>
             Continue with Google
           </Button>
+          <p className='z-10'>
+            Don&apos;t have an account? <Link href='/signup' className='underline'>Signup</Link>
+          </p>
         </div>
       </div>
       <div className='flex h-[100px] w-full flex-col items-center border-t'>

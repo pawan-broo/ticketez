@@ -35,7 +35,7 @@ export const PopularMuseums: React.FC = () => {
           variant='secondary'
           className='flex items-center  pr-px!'
         >
-          Browse all Museums <ArrowUpRight />
+          Browse all Museums
           <div className='h-full aspect-square justify-center p-[6px] flex items-center'>
             <div className='bg-primary text-background w-full h-full flex justify-center items-center rounded-sm'>
               <ArrowUpRight />
