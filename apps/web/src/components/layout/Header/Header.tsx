@@ -9,7 +9,7 @@ export const Header: React.FC = () => {
       <div className='relative container flex justify-between border-x px-8 py-8'>
         <Link href='/' className='flex items-center gap-2'>
           <div className='bg-primary size-7 rounded-full' />
-          <h1 className='font-medium'>Titiesez</h1>
+          <h1 className='font-medium'>Ticketez</h1>
         </Link>
 
         <nav className='absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2'>
