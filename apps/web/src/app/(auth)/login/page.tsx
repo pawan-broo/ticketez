@@ -1,11 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cubicBezier, motion } from 'framer-motion';
 import Link from 'next/link';
+import { authClient } from '@/lib/auth-client';
 
 const Login: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleContinueWithGoogle = async () => {
+
+    setIsLoading(true);
+
+    await authClient.signIn.social({
+      provider: 'google',
+    });
+  };
+
   return (
     <div className='flex h-screen w-full flex-col items-center'>
       <div className='container flex flex-col items-center gap-8 h-full border-x mt-[100px] p-8'>
@@ -36,7 +48,12 @@ const Login: React.FC = () => {
             <p className='text-lg'>Let&apos; continue where you left off.</p>
           </section>
 
-          <Button className='w-[400px] z-10' size='xl'>
+          <Button
+            className='w-[400px] z-10'
+            size='xl'
+            disabled={isLoading}
+            onClick={handleContinueWithGoogle}
+          >
             <svg className='mr-2 h-4 w-4' viewBox='0 0 24 24'>
               <path
                 d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
@@ -55,10 +72,13 @@ const Login: React.FC = () => {
                 fill='#fff'
               />
             </svg>
-            Continue with Google
+            {isLoading ? 'Loading...' : 'Continue with Google'}
           </Button>
           <p className='z-10'>
-            Don&apos;t have an account? <Link href='/signup' className='underline'>Signup</Link>
+            Don&apos;t have an account?{' '}
+            <Link href='/signup' className='underline'>
+              Signup
+            </Link>
           </p>
         </div>
       </div>

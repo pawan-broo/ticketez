@@ -19,6 +19,7 @@ import Link from 'next/link';
 import React from 'react';
 import type { Route } from 'next';
 import { HeroSearchBar } from '@/components/feature';
+import { BookingDialog } from '@/components/feature/BookingDialog';
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -136,14 +137,15 @@ const Search: React.FC<SearchPageProps> = async ({ searchParams }) => {
                 <Button variant='outline' size='sm'>
                   <Upload /> Share
                 </Button>
-                <Button size='sm' className='flex items-center z-10 pr-px'>
-                  Book Tickets
-                  <div className='h-full aspect-square justify-center p-[6px] flex items-center'>
-                    <div className='bg-background text-primary w-full h-full flex justify-center items-center rounded-sm'>
-                      <ArrowUpRight />
-                    </div>
-                  </div>
-                </Button>
+                <BookingDialog
+                  placeSlug={placeData.slug}
+                  placeName={placeData.name}
+                  placeLocation={placeData.location}
+                  destinationType={destinationType as 'monument' | 'museum'}
+                  country={country || ''}
+                  state={state || ''}
+                  city={city || ''}
+                />
               </section>
             </section>
 

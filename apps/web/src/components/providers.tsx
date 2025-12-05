@@ -2,16 +2,17 @@
 
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { queryClient } from '@/utils/trpc';
+import { queryClient, trpc, trpcClient } from '@/utils/trpc';
 import { ThemeProvider } from './theme-provider';
 import { Toaster } from './ui/sonner';
 import { useMounted } from '@/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Lenis from 'lenis';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const mounted = useMounted();
+  const [trpcClientState] = useState(() => trpcClient);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -31,17 +32,19 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeProvider
-      attribute='class'
-      defaultTheme='light'
-      enableSystem
-      disableTransitionOnChange
-    >
+    <trpc.Provider client={trpcClientState} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        {children}
-        <ReactQueryDevtools />
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='light'
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <ReactQueryDevtools />
+          <Toaster richColors />
+        </ThemeProvider>
       </QueryClientProvider>
-      <Toaster richColors />
-    </ThemeProvider>
+    </trpc.Provider>
   );
 }

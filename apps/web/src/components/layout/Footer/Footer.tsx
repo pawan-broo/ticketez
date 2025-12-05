@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
           <section>
             <p className='text-background/50 gap-2 cursor-default leading-none flex items-center'>
               <span className='mt-0.5'>[</span>
-              <span>React Out</span>
+              <span>Reach Out</span>
               <span className='mt-0.5'>]</span>
             </p>
             <p className='text-[40px] text-background font-flagfies'>

@@ -13,7 +13,14 @@ export const auth = betterAuth<BetterAuthOptions>({
   }),
   trustedOrigins: [process.env.CORS_ORIGIN || ''],
   emailAndPassword: {
-    enabled: true,
+    enabled: false,
+  },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
   },
   plugins: [nextCookies()],
   advanced: {
