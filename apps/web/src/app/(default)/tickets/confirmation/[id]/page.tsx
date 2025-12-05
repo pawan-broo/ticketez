@@ -59,9 +59,14 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
 
   const { booking, members } = bookingData;
 
-  const confirmationUrl = `${
-    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
-  }/tickets/confirmation/${id}`;
+  // const confirmationUrl = `${
+  //   process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
+  // }/tickets/confirmation/${id}`;
+
+  const confirmationUrl =
+    process.env.NODE_ENV === 'production'
+      ? `https://ticketez-web.vercel.app/tickets/confirmation/${id}`
+      : `http://localhost:3001/tickets/confirmation/${id}`;
 
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b'>

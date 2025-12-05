@@ -15,6 +15,7 @@ export const auth = betterAuth<BetterAuthOptions>({
   emailAndPassword: {
     enabled: false,
   },
+  secret: process.env.BETTER_AUTH_SECRET,
 
   socialProviders: {
     google: {
