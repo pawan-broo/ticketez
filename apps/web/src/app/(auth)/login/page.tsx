@@ -15,6 +15,7 @@ const Login: React.FC = () => {
 
     await authClient.signIn.social({
       provider: 'google',
+      
     });
   };
 
