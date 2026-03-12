@@ -65,7 +65,7 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
 
   const confirmationUrl =
     process.env.NODE_ENV === 'production'
-      ? `https://ticketez-web.vercel.app/tickets/confirmation/${id}`
+      ? `https://ticketez-web-di6t.vercel/tickets/confirmation/${id}`
       : `http://localhost:3001/tickets/confirmation/${id}`;
 
   return (
