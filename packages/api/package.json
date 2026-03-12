@@ -28,7 +28,7 @@
     "@trpc/server": "catalog:",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.0",
-    "next": "catalog:",
+    "next": "^16.1.6",
     "zod": "catalog:"
   }
 }
