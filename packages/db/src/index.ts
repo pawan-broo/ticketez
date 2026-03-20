@@ -6,3 +6,4 @@ export * from "./schema/auth";
 export * from "./schema/booking";
 export * from "./schema/places";
 export * from "./schema/savedPlace";
+export * from "./schema/settings";
