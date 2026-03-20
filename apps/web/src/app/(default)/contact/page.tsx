@@ -55,7 +55,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b min-h-screen'>
+    <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
       <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
         {/* Hero */}
         <div>

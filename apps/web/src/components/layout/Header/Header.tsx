@@ -83,11 +83,11 @@ export const Header: React.FC = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
+                    {/*<DropdownMenuItem asChild>
                       <Link href='/' className='cursor-pointer'>
                         <span>Settings</span>
                       </Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem>*/}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className='cursor-pointer'
