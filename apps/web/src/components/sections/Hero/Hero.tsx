@@ -36,12 +36,7 @@ export const Hero: React.FC = () => {
             ))}
           </div>
 
-          <div className=' flex z-10  mt-10   cursor-pointer bg-background items-center gap-4 rounded-lg border px-4 py-1 pr-1'>
-            <p className='text-sm'>#3 clicks Booking</p>
-            <div className='bg-primary flex h-7 w-7 items-center justify-center rounded-sm duration-100'>
-              <ArrowUpRight className='w-5 text-white' />
-            </div>
-          </div>
+
 
           <div className='flex flex-col z-10 pointer-events-none items-center gap-2 justify-center'>
             <p className='inline-flex  flex-wrap justify-center  '>

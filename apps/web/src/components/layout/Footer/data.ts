@@ -8,19 +8,19 @@ export const footerLinks = [
       },
       {
         label: 'Browse Monuments',
-        href: '/',
+        href: '/places?type=monument',
       },
       {
         label: 'Browse Museums',
-        href: '/',
+        href: '/places?type=museum',
       },
       {
         label: 'About',
-        href: '/',
+        href: '/about',
       },
       {
         label: 'Contact',
-        href: '/',
+        href: '/contact',
       },
     ],
   },
@@ -29,15 +29,15 @@ export const footerLinks = [
     links: [
       {
         label: 'Facebook',
-        href: '/',
+        href: 'https://facebook.com',
       },
       {
         label: 'Twitter',
-        href: '/',
+        href: 'https://twitter.com',
       },
       {
         label: 'Instagram',
-        href: '/',
+        href: 'https://instagram.com',
       },
     ],
   },

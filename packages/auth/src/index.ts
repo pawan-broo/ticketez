@@ -8,7 +8,6 @@ import { randomUUID } from 'crypto';
 export const auth = betterAuth<BetterAuthOptions>({
   database: drizzleAdapter(db, {
     provider: 'pg',
-
     schema: schema,
   }),
   trustedOrigins: [process.env.CORS_ORIGIN || ''],
@@ -16,15 +15,23 @@ export const auth = betterAuth<BetterAuthOptions>({
     enabled: false,
   },
   secret: process.env.BETTER_AUTH_SECRET,
-
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      prompt:"select_account"
+      prompt: 'select_account',
     },
   },
   plugins: [nextCookies()],
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        defaultValue: 'USER',
+        input: false,
+      },
+    },
+  },
   advanced: {
     database: {
       generateId: () => randomUUID(),

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import type { Route } from 'next';
 
 import { navLinks } from './data';
 import { Button } from '@/components/ui/button';
@@ -40,7 +41,7 @@ export const Header: React.FC = () => {
         <nav className='absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2'>
           {navLinks.map((navLink, index) => (
             <Button key={index} variant='ghost' asChild>
-              <Link href='/'>{navLink.label}</Link>
+              <Link href={navLink.href as Route}>{navLink.label}</Link>
             </Button>
           ))}
         </nav>
@@ -67,13 +68,18 @@ export const Header: React.FC = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className='w-56' align='end' forceMount>
                     <DropdownMenuItem asChild>
-                      <Link href='/' className='cursor-pointer'>
+                      <Link href={'/profile' as Route} className='cursor-pointer'>
                         <span>Profile</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href='/activity' className='cursor-pointer'>
                         <span>Activity</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href='/saved' className='cursor-pointer'>
+                        <span>Saved Places</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />

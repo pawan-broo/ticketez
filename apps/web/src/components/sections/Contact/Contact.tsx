@@ -4,8 +4,11 @@ import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cubicBezier, motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export const Contact: React.FC = () => {
+  const router = useRouter();
+
   const title = "Let's get you booked";
   const description =
     'From monuments to museums, we have got you covered. Plan your trip and enjoy the best experience.';
@@ -95,7 +98,11 @@ export const Contact: React.FC = () => {
             </p>
           </div>
 
-          <Button size='lg' className='flex items-center z-10 pr-px '>
+          <Button
+            size='lg'
+            className='flex items-center z-10 pr-px'
+            onClick={() => router.push('/contact')}
+          >
             Get in Touch
             <div className='h-full aspect-square justify-center p-[6px] flex items-center'>
               <div className='bg-background text-primary w-full h-full flex justify-center items-center rounded-sm'>

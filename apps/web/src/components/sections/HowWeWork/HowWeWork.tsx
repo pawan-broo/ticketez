@@ -6,6 +6,8 @@ import { cubicBezier, motion } from 'framer-motion';
 import { howWeWorkSteps } from './data';
 import Link from 'next/link';
 
+const stepLinks = ['/places', '/about', '/login'];
+
 export const HowWeWork: React.FC = () => {
   const title = 'Plan your trip in 3 Steps.';
   const description =
@@ -70,7 +72,6 @@ export const HowWeWork: React.FC = () => {
                     delay: 0.1,
                   }}
                   className='relative inline-flex  text-lg leading-tight flex-wrap overflow-hidden text-center'
-                  // className='text-[40px] text-primary  font-flagfies  text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
                 >
                   {value}&nbsp;
                 </motion.span>
@@ -98,7 +99,7 @@ export const HowWeWork: React.FC = () => {
               </div>
               <div>
                 <Link
-                  href='/'
+                  href={stepLinks[index] as never}
                   className='text-sm underline underline-offset-2 to-muted-foreground'
                 >
                   Learn More

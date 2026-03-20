@@ -1,108 +1,74 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Plus, Minus, ArrowUpRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { trpc } from '@/utils/trpc';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import React, { useState } from 'react'
+import { Plus, Minus, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
 
-interface BookingFormProps {
-  placeSlug: string;
-  placeName: string;
-  placeLocation: string;
-  destinationType: 'monument' | 'museum';
-  country: string;
-  state: string;
-  city: string;
+interface BookingInfoStepProps {
+  onNext: (data: {
+    members: { name: string; age: number; email: string }[]
+    visitDate: string | undefined
+  }) => void
 }
 
 interface Member {
-  id: string;
-  name: string;
-  age: string;
-  email: string;
+  id: string
+  name: string
+  age: string
+  email: string
 }
 
-export const BookingForm: React.FC<BookingFormProps> = ({
-  placeSlug,
-  placeName,
-  placeLocation,
-  destinationType,
-  country,
-  state,
-  city,
-}) => {
-  const router = useRouter();
+export const BookingInfoStep: React.FC<BookingInfoStepProps> = ({ onNext }) => {
   const [members, setMembers] = useState<Member[]>([
     { id: crypto.randomUUID(), name: '', age: '', email: '' },
-  ]);
-  const [visitDate, setVisitDate] = useState('');
-
-  // Use React Query's useMutation with tRPC options
-
-  const createBooking = trpc.booking.create.useMutation({
-    onSuccess: (data) => {
-      toast.success('Booking confirmed!');
-      router.push(`/tickets/confirmation/${data.bookingId}`);
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Failed to create booking');
-    },
-  });
+  ])
+  const [visitDate, setVisitDate] = useState('')
 
   const addMember = () => {
     setMembers([
       ...members,
       { id: crypto.randomUUID(), name: '', age: '', email: '' },
-    ]);
-  };
+    ])
+  }
 
   const removeMember = (id: string) => {
     if (members.length > 1) {
-      setMembers(members.filter((m) => m.id !== id));
+      setMembers(members.filter((m) => m.id !== id))
     }
-  };
+  }
 
   const updateMember = (id: string, field: keyof Member, value: string) => {
     setMembers(
       members.map((m) => (m.id === id ? { ...m, [field]: value } : m)),
-    );
-  };
+    )
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
 
     const validMembers = members.map((m) => ({
       name: m.name,
       age: parseInt(m.age),
       email: m.email,
-    }));
+    }))
 
     const hasInvalidMember = validMembers.some(
       (m) => !m.name || !m.email || isNaN(m.age) || m.age < 1,
-    );
+    )
 
     if (hasInvalidMember) {
-      toast.error('Please fill all member details correctly');
-      return;
+      toast.error('Please fill all member details correctly')
+      return
     }
 
-    await createBooking.mutateAsync({
-      placeSlug,
-      placeName,
-      placeLocation,
-      destinationType,
-      country,
-      state,
-      city,
-      visitDate: visitDate || undefined,
+    onNext({
       members: validMembers,
-    });
-  };
+      visitDate: visitDate || undefined,
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
@@ -196,17 +162,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         <Button
           type='submit'
           size='lg'
-          disabled={createBooking.isPending}
           className='flex items-center z-10 pr-px'
         >
-          {createBooking.isPending ? 'Processing...' : 'Confirm Booking'}
+          Next: Payment
           <div className='h-full aspect-square justify-center p-[6px] flex items-center'>
             <div className='bg-background text-primary w-full h-full flex justify-center items-center rounded-sm'>
-              <ArrowUpRight />
+              <ArrowRight />
             </div>
           </div>
         </Button>
       </div>
     </form>
-  );
-};
+  )
+}

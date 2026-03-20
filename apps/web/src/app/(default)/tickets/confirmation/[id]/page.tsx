@@ -152,8 +152,20 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
 
                 <div>
                   <p className='text-sm text-muted-foreground'>Status</p>
-                  <Badge variant='outline' className='capitalize'>
-                    {booking.status}
+                  <Badge
+                    className={
+                      booking.status === 'confirmed'
+                        ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
+                        : booking.status === 'cancelled'
+                          ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800'
+                    }
+                  >
+                    {booking.status === 'confirmed'
+                      ? 'Confirmed'
+                      : booking.status === 'cancelled'
+                        ? 'Cancelled'
+                        : 'Pending Verification'}
                   </Badge>
                 </div>
 
@@ -161,9 +173,35 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
                   <p className='text-sm text-muted-foreground'>
                     Payment Status
                   </p>
-                  <Badge variant='outline' className='capitalize'>
-                    {booking.paymentStatus}
+                  <Badge
+                    className={
+                      booking.paymentStatus === 'verified'
+                        ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
+                        : booking.paymentStatus === 'failed'
+                          ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800'
+                    }
+                  >
+                    {booking.paymentStatus === 'verified'
+                      ? 'Verified'
+                      : booking.paymentStatus === 'failed'
+                        ? 'Failed'
+                        : 'Unverified'}
                   </Badge>
+                </div>
+
+                <div>
+                  <p className='text-sm text-muted-foreground'>Amount Paid</p>
+                  <p className='font-medium'>
+                    ₹{(booking.totalAmount / 100).toFixed(2)}
+                  </p>
+                </div>
+
+                <div>
+                  <p className='text-sm text-muted-foreground'>Transaction ID</p>
+                  <p className='font-mono text-sm break-all'>
+                    {booking.transactionId ?? '—'}
+                  </p>
                 </div>
               </div>
             </div>

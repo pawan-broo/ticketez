@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { router, publicProcedure, protectedProcedure } from '../index';
+import { router, publicProcedure, protectedProcedure, adminProcedure } from '../index';
 import { db } from '@ticketez/db';
 import { booking, bookingMember } from '@ticketez/db/schema/booking';
-import { eq } from 'drizzle-orm';
+import { user } from '@ticketez/db/schema/auth';
+import { eq, and, desc } from 'drizzle-orm';
 
-import { sendBookingConfirmation } from '@ticketez/email';
+import { sendBookingPendingEmail, sendBookingConfirmedEmail } from '@ticketez/email';
 
 export const bookingRouter = router({
   create: protectedProcedure
@@ -18,6 +19,8 @@ export const bookingRouter = router({
         state: z.string(),
         city: z.string(),
         visitDate: z.string().optional(),
+        totalAmount: z.number().int().min(0),
+        transactionId: z.string().min(1, 'Transaction ID is required'),
         members: z
           .array(
             z.object({
@@ -35,7 +38,6 @@ export const bookingRouter = router({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      // Create booking
       const [newBooking] = await db
         .insert(booking)
         .values({
@@ -49,17 +51,17 @@ export const bookingRouter = router({
           city: input.city,
           visitDate: input.visitDate ? new Date(input.visitDate) : null,
           totalMembers: input.members.length,
-          status: 'confirmed',
-          paymentStatus: 'pending',
+          totalAmount: input.totalAmount,
+          status: 'pending',
+          paymentStatus: 'unverified',
+          transactionId: input.transactionId,
         })
         .returning();
 
-      console.log('newBooking', newBooking);
       if (!newBooking) {
         throw new Error('Failed to create booking');
       }
 
-      // Create booking members
       await db.insert(bookingMember).values(
         input.members.map((member) => ({
           bookingId: newBooking.id,
@@ -69,12 +71,10 @@ export const bookingRouter = router({
         })),
       );
 
-      // Send confirmation emails
       const confirmationUrl = `${process.env.BETTER_AUTH_URL}/tickets/confirmation/${newBooking.id}`;
       const memberEmails = input.members.map((m) => m.email);
 
-      // Import and call email service (you can do this async without awaiting)
-      await sendBookingConfirmation({
+      await sendBookingPendingEmail({
         to: memberEmails,
         bookingId: newBooking.id,
         placeName: input.placeName,
@@ -83,6 +83,8 @@ export const bookingRouter = router({
         bookingDate: newBooking.bookingDate,
         visitDate: newBooking.visitDate,
         totalMembers: input.members.length,
+        totalAmount: input.totalAmount,
+        transactionId: input.transactionId,
         confirmationUrl,
       });
 
@@ -123,8 +125,151 @@ export const bookingRouter = router({
       .select()
       .from(booking)
       .where(eq(booking.userId, userId))
-      .orderBy(booking.createdAt);
+      .orderBy(desc(booking.createdAt));
 
     return bookings;
   }),
+
+  getAllBookings: adminProcedure
+    .input(
+      z.object({
+        status: z.string().optional(),
+        paymentStatus: z.string().optional(),
+        search: z.string().optional(),
+        limit: z.number().int().min(1).max(100).default(50),
+        offset: z.number().int().min(0).default(0),
+      }),
+    )
+    .query(async ({ input }) => {
+      const conditions = [];
+
+      if (input.status && input.status !== 'all') {
+        conditions.push(eq(booking.status, input.status));
+      }
+
+      if (input.paymentStatus && input.paymentStatus !== 'all') {
+        conditions.push(eq(booking.paymentStatus, input.paymentStatus));
+      }
+
+      const bookings = await db
+        .select({
+          id: booking.id,
+          placeSlug: booking.placeSlug,
+          placeName: booking.placeName,
+          placeLocation: booking.placeLocation,
+          destinationType: booking.destinationType,
+          country: booking.country,
+          state: booking.state,
+          city: booking.city,
+          bookingDate: booking.bookingDate,
+          visitDate: booking.visitDate,
+          totalMembers: booking.totalMembers,
+          totalAmount: booking.totalAmount,
+          status: booking.status,
+          paymentStatus: booking.paymentStatus,
+          transactionId: booking.transactionId,
+          adminNote: booking.adminNote,
+          createdAt: booking.createdAt,
+          updatedAt: booking.updatedAt,
+          userId: booking.userId,
+          userName: user.name,
+          userEmail: user.email,
+          userImage: user.image,
+        })
+        .from(booking)
+        .leftJoin(user, eq(booking.userId, user.id))
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(booking.createdAt))
+        .limit(input.limit)
+        .offset(input.offset);
+
+      // Apply search filter in JS since it spans joined columns
+      const filtered = input.search
+        ? bookings.filter((b) => {
+            const q = input.search!.toLowerCase();
+            return (
+              b.placeName.toLowerCase().includes(q) ||
+              b.userName?.toLowerCase().includes(q) ||
+              b.userEmail?.toLowerCase().includes(q) ||
+              b.id.toLowerCase().includes(q)
+            );
+          })
+        : bookings;
+
+      return filtered;
+    }),
+
+  confirmPayment: adminProcedure
+    .input(
+      z.object({
+        bookingId: z.string().uuid(),
+        adminNote: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const [updated] = await db
+        .update(booking)
+        .set({
+          status: 'confirmed',
+          paymentStatus: 'verified',
+          adminNote: input.adminNote ?? null,
+          updatedAt: new Date(),
+        })
+        .where(eq(booking.id, input.bookingId))
+        .returning();
+
+      if (!updated) {
+        throw new Error('Booking not found');
+      }
+
+      const members = await db
+        .select()
+        .from(bookingMember)
+        .where(eq(bookingMember.bookingId, input.bookingId));
+
+      const confirmationUrl = `${process.env.BETTER_AUTH_URL}/tickets/confirmation/${updated.id}`;
+      const memberEmails = members.map((m) => m.email);
+
+      await sendBookingConfirmedEmail({
+        to: memberEmails,
+        bookingId: updated.id,
+        placeName: updated.placeName,
+        placeLocation: updated.placeLocation,
+        members: members.map((m) => ({ name: m.name, age: m.age, email: m.email })),
+        bookingDate: updated.bookingDate,
+        visitDate: updated.visitDate,
+        totalMembers: updated.totalMembers,
+        totalAmount: updated.totalAmount,
+        transactionId: updated.transactionId ?? '',
+        confirmationUrl,
+      });
+
+      return { success: true };
+    }),
+
+  rejectPayment: adminProcedure
+    .input(
+      z.object({
+        bookingId: z.string().uuid(),
+        adminNote: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const [updated] = await db
+        .update(booking)
+        .set({
+          status: 'cancelled',
+          paymentStatus: 'failed',
+          adminNote: input.adminNote ?? null,
+          updatedAt: new Date(),
+        })
+        .where(eq(booking.id, input.bookingId))
+        .returning();
+
+      if (!updated) {
+        throw new Error('Booking not found');
+      }
+
+      return { success: true };
+    }),
 });

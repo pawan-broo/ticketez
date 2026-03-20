@@ -5,16 +5,18 @@ import { useRouter } from 'next/navigation';
 import { Search, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Database, type MonumentOrMuseum } from '@/constants/database';
+import { trpc } from '@/utils/trpc';
 import type { Route } from 'next';
 
 interface SearchResult {
   name: string;
+  slug: string;
   type: 'Monument' | 'Museum';
   city: string;
   state: string;
   country: string;
-  googleMapLink: string;
+  location: string;
+  destinationType: string;
 }
 
 const fuzzyMatch = (text: string, query: string): number => {
@@ -46,81 +48,47 @@ export const HeroSearchBar: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const allResults = useMemo(() => {
-    const results: SearchResult[] = [];
+  const { data: placesData, isLoading } = trpc.places.getAll.useQuery(
+    { limit: 200 },
+    { staleTime: 60000 },
+  );
 
-    Database.forEach((countryData) => {
-      countryData.states.forEach((stateData) => {
-        stateData.city.forEach((cityData) => {
-          const processItems = (
-            items: MonumentOrMuseum[],
-            type: 'Monument' | 'Museum',
-          ) => {
-            items.forEach((item) => {
-              results.push({
-                name: item.name,
-                type,
-                city: cityData.city,
-                state: stateData.state,
-                country: countryData.country,
-                googleMapLink: item.googleMapLink,
-              });
-            });
-          };
+  const allResults = useMemo<SearchResult[]>(() => {
+    if (!placesData) return [];
+    return placesData.map((place) => ({
+      name: place.name,
+      slug: place.slug,
+      type: place.type === 'museum' ? 'Museum' : 'Monument',
+      city: place.city,
+      state: place.state,
+      country: place.country,
+      location: place.location,
+      destinationType: place.type,
+    }));
+  }, [placesData]);
 
-          processItems(cityData.monuments, 'Monument');
-          processItems(cityData.museums, 'Museum');
-        });
-      });
-    });
-
-    return results;
-  }, []);
-
-  const searchResults = useMemo(() => {
-    if (!query.trim()) return allResults.slice(0, 50); // Show first 50 when empty
+  const searchResults = useMemo<SearchResult[]>(() => {
+    if (!query.trim()) return allResults.slice(0, 50);
 
     const results: Array<SearchResult & { score: number }> = [];
 
-    Database.forEach((countryData) => {
-      countryData.states.forEach((stateData) => {
-        stateData.city.forEach((cityData) => {
-          const processItems = (
-            items: MonumentOrMuseum[],
-            type: 'Monument' | 'Museum',
-          ) => {
-            items.forEach((item) => {
-              const nameScore = fuzzyMatch(item.name, query);
-              const cityScore = fuzzyMatch(cityData.city, query);
-              const stateScore = fuzzyMatch(stateData.state, query);
-              const countryScore = fuzzyMatch(countryData.country, query);
-              const locationScore = fuzzyMatch(item.location, query);
+    allResults.forEach((result) => {
+      const nameScore = fuzzyMatch(result.name, query);
+      const cityScore = fuzzyMatch(result.city, query);
+      const stateScore = fuzzyMatch(result.state, query);
+      const countryScore = fuzzyMatch(result.country, query);
+      const locationScore = fuzzyMatch(result.location, query);
 
-              const totalScore =
-                nameScore * 5 +
-                cityScore * 3 +
-                stateScore * 2 +
-                countryScore * 1 +
-                locationScore * 2;
+      const totalScore =
+        nameScore * 5 +
+        cityScore * 3 +
+        stateScore * 2 +
+        countryScore * 1 +
+        locationScore * 2;
 
-              if (totalScore > 0) {
-                results.push({
-                  name: item.name,
-                  type,
-                  city: cityData.city,
-                  state: stateData.state,
-                  country: countryData.country,
-                  googleMapLink: item.googleMapLink,
-                  score: totalScore,
-                });
-              }
-            });
-          };
-
-          processItems(cityData.monuments, 'Monument');
-          processItems(cityData.museums, 'Museum');
-        });
-      });
+      if (totalScore > 0) {
+        results.push({ ...result, score: totalScore });
+      }
     });
 
     return results.sort((a, b) => b.score - a.score).slice(0, 8);
@@ -148,15 +116,8 @@ export const HeroSearchBar: React.FC = () => {
   };
 
   const handleResultClick = (result: SearchResult) => {
-    const slug = result.name.toLowerCase().replace(/\s+/g, '-');
-    const countrySlug = result.country.toLowerCase().replace(/\s+/g, '-');
-    const stateSlug = result.state.toLowerCase().replace(/\s+/g, '-');
-    const citySlug = result.city.toLowerCase().replace(/\s+/g, '-');
-
-    router.push('/');
-
     router.push(
-      `/search?country=${countrySlug}&state=${stateSlug}&city=${citySlug}&lookFor=${slug}&destinationType=${result.type.toLowerCase()}` as Route,
+      `/search?country=${encodeURIComponent(result.country.toLowerCase())}&state=${encodeURIComponent(result.state.toLowerCase())}&city=${encodeURIComponent(result.city.toLowerCase())}&lookFor=${result.slug}&destinationType=${result.destinationType}` as Route,
     );
     setIsOpen(false);
     setQuery('');
@@ -185,16 +146,32 @@ export const HeroSearchBar: React.FC = () => {
         <Search />
       </Button>
 
-      {isOpen && searchResults.length > 0 && (
-        <div className='absolute max-h-[400px] top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg  overflow-y-scroll z-20'>
+      {/* Loading skeleton */}
+      {isOpen && isLoading && (
+        <div className='absolute top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg z-20 p-3 flex flex-col gap-3'>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className='flex items-center gap-3 animate-pulse'>
+              <div className='size-8 bg-muted rounded-sm shrink-0' />
+              <div className='flex flex-col gap-1.5 flex-1'>
+                <div className='h-3 bg-muted rounded w-2/3' />
+                <div className='h-3 bg-muted rounded w-1/2' />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Results dropdown */}
+      {isOpen && !isLoading && searchResults.length > 0 && (
+        <div className='absolute max-h-[400px] top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg overflow-y-scroll z-20'>
           {searchResults.map((result, index) => (
             <button
-              key={`${result.name}-${index}-${result.city}`}
+              key={`${result.slug}-${index}`}
               onClick={() => handleResultClick(result)}
               className='w-full p-3 flex justify-between items-start hover:bg-accent/50 transition-colors text-left border-b last:border-b-0'
             >
               <div className='flex gap-2 items-center'>
-                <div className='size-8 bg-primary/20 rounded-sm' />{' '}
+                <div className='size-8 bg-primary/20 rounded-sm' />
                 <div>
                   <p className='font-medium leading-none text-sm'>
                     {result.name}
@@ -211,7 +188,8 @@ export const HeroSearchBar: React.FC = () => {
         </div>
       )}
 
-      {isOpen && query.trim() && searchResults.length === 0 && (
+      {/* No results */}
+      {isOpen && !isLoading && query.trim() && searchResults.length === 0 && (
         <div className='absolute top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg z-50'>
           <button
             onClick={handleNoResultsClick}
