@@ -33,7 +33,11 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 26.9855,
     longitude: 75.8513,
     googleMapLink: 'https://goo.gl/maps/jn8W6QqDnkq',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+        'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHyyglDQUvQ20gndzRheV3WqpA8jtFCuUNTJvZo',
+        '', '', '', ''
+    ],
     videos: [''],
     shortDesc: 'A majestic hilltop fort known for its artistic Hindu-style elements and Sheesh Mahal.',
     longDesc: 'Built by Raja Man Singh I in 1592, Amber Fort is a UNESCO World Heritage site. It is famous for its large ramparts, series of gates, and cobbled paths. The Maota Lake provides a stunning reflection of the fort.',
@@ -58,7 +62,11 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 26.9239,
     longitude: 75.8267,
     googleMapLink: 'https://goo.gl/maps/yTfn5UemYxT2',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+       'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHyWHGaV7CZIOuFGARlaH2ns1bzfvw6jTEMLCqD',
+       '', '', '', ''
+     ],
     videos: [''],
     shortDesc: 'The "Palace of Breeze" with 953 honeycombed windows.',
     longDesc: 'Constructed in 1799 by Maharaja Sawai Pratap Singh, its unique five-story exterior is akin to the honeycomb of a beehive. It allowed royal women to observe street festivals without being seen.',
@@ -82,7 +90,10 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 26.9247,
     longitude: 75.8242,
     googleMapLink: 'https://goo.gl/maps/ZnJZBmZqGxn',
-    images: ['', '', '', '', ''],
+    images: [
+        'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHy0eUeT86zfrbpwtjeBnG0W8sZvx75kR4moTyc',
+        '', '', '', ''
+      ],
     videos: [''],
     shortDesc: 'A collection of nineteen architectural astronomical instruments.',
     longDesc: 'A UNESCO World Heritage site featuring the world\'s largest stone sundial. It was built by Rajput King Sawai Jai Singh II to measure time and track celestial bodies.',
@@ -106,7 +117,12 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 24.8879,
     longitude: 74.6451,
     googleMapLink: 'https://goo.gl/maps/chittor-link',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+      'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHymUNyQAbFdlxCyzS468soagvOiZtA2KMfQnNU',
+      '', '', '', ''
+    ],
+
     videos: [''],
     shortDesc: 'The largest fort in India and the grandest in Rajasthan.',
     longDesc: 'Spanning 700 acres, this UNESCO site is a symbol of Rajput bravery. Key highlights include the Vijay Stambha (Tower of Victory) and the Padmini Palace.',
@@ -276,7 +292,11 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 26.9124,
     longitude: 75.8178,
     googleMapLink: 'https://goo.gl/maps/1dRM3dM5aV32',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+       'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHyvk2rJuHr0xUFHRpcuE7d59Y46Z2tgjVkQqNT',
+       '', '', '', ''
+     ],
     videos: [''],
     shortDesc: 'Rajasthan\'s oldest museum featuring an Egyptian mummy.',
     longDesc: 'An Indo-Saracenic architectural masterpiece housing a rich collection of artifacts, pottery, and carpets.',
@@ -300,7 +320,11 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 26.9258,
     longitude: 75.8237,
     googleMapLink: 'https://goo.gl/maps/city-palace-jaipur',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+       'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHysqgCpPVuCSMTey4UJvqmZRnjgzoPXk26HOi9',
+       '', '', '', ''
+     ],
     videos: [''],
     shortDesc: 'Showcases royal textiles, weapons, and paintings.',
     longDesc: 'Known officially as the Maharaja Sawai Man Singh II Museum, it houses two world-record-sized silver urns.',
@@ -324,7 +348,11 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 26.2912,
     longitude: 73.0332,
     googleMapLink: 'https://goo.gl/maps/sardar-museum',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+       'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHyLZftyySQBfu4ZKni9jLzgqOdkeMWGY8PS7RU',
+       '', '', '', ''
+     ],
     videos: [''],
     shortDesc: 'A British-era museum inside Umaid Public Gardens.',
     longDesc: 'Built in 1909, it displays portraits of kings, stone sculptures, and terracotta from ancient sites.',
@@ -348,7 +376,11 @@ const places: (typeof place.$inferInsert)[] = [
     latitude: 24.5902,
     longitude: 73.7145,
     googleMapLink: 'https://goo.gl/maps/ahar-link',
-    images: ['', '', '', '', ''],
+    // images: ['', '', '', '', ''],
+    images: [
+       'https://1qcn7f9d7l.ufs.sh/f/AQzTCCjJrmHyxrE6cx1Z4FzVksYq3CIGvidnBeOyulTbSJW9',
+       '', '', '', ''
+     ],
     videos: [''],
     shortDesc: 'Exhibits items from the 4,000-year-old Ahar culture.',
     longDesc: 'Houses a rare collection of earthen pots, iron objects, and sculptures dating back to the 10th century.',

@@ -6,14 +6,22 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import { trpc } from '@/utils/trpc';
 import type { Route } from 'next';
+import Image from 'next/image';
 
 const SKELETON_COUNT = 4;
 
 export const PopularMonuments: React.FC = () => {
   const router = useRouter();
 
-  const { data: monuments, isLoading } = trpc.places.getAll.useQuery(
-    { type: 'monument', limit: 4 },
+  const MONUMENT_SLUGS = [
+    'chittorgarh-fort',
+    'jantar-mantar',
+    'hawa-mahal',
+    'amber-fort',
+  ];
+
+  const { data: monuments, isLoading } = trpc.places.getBySlugs.useQuery(
+    { slugs: MONUMENT_SLUGS },
     { staleTime: 60000 },
   );
 
@@ -83,7 +91,17 @@ export const PopularMonuments: React.FC = () => {
                 onClick={() => handleCardClick(p)}
                 className='w-full h-full bg-secondary/10 rounded-xl p-4 cursor-pointer hover:bg-secondary/20 transition-colors'
               >
-                <div className='w-full h-[200px] bg-secondary/10 rounded-lg relative overflow-hidden' />
+                {p.images[0] && p.images[0] !== "" ? (
+
+                   <div className='w-full h-[200px] bg-secondary/10 rounded-lg relative overflow-hidden' >
+
+                  <Image src={p.images[0]} alt={p.name} fill className='object-cover object-top'/>
+                   </div>
+
+                ) : (
+
+                  <div className='w-full h-[200px] bg-secondary/10 rounded-lg relative overflow-hidden' />
+                )}
                 <div className='p-2 leading-none'>
                   <p className='text-xl text-background'>{p.name}</p>
                   <p className='text-background/50'>

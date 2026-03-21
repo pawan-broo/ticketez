@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { router, publicProcedure, adminProcedure } from '../index';
 import { db } from '@ticketez/db';
 import { place } from '@ticketez/db/schema/places';
-import { eq, and, ilike, or } from 'drizzle-orm';
+import { eq, and, ilike, or, inArray } from 'drizzle-orm';
 
 export const placesRouter = router({
   getNearby: publicProcedure
@@ -87,6 +87,24 @@ export const placesRouter = router({
         .limit(input.limit);
 
       return places;
+    }),
+
+  getBySlugs: publicProcedure
+    .input(z.object({ slugs: z.array(z.string()).min(1).max(20) }))
+    .query(async ({ input }) => {
+      const results = await db
+        .select()
+        .from(place)
+        .where(
+          and(
+            inArray(place.slug, input.slugs),
+            eq(place.isActive, true),
+          ),
+        );
+
+      // Return in the same order as the requested slugs
+      const map = new Map(results.map((p) => [p.slug, p]));
+      return input.slugs.map((s) => map.get(s)).filter(Boolean) as typeof results;
     }),
 
   getBySlug: publicProcedure
