@@ -14,18 +14,18 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const mounted = useMounted();
   const [trpcClientState] = useState(() => trpcClient);
 
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1,
-      allowNestedScroll: true,
-    });
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+  // useEffect(() => {
+  //   const lenis = new Lenis({
+  //     duration: 1,
+  //     allowNestedScroll: true,
+  //   });
+  //   function raf(time: number) {
+  //     lenis.raf(time);
+  //     requestAnimationFrame(raf);
+  //   }
 
-    requestAnimationFrame(raf);
-  });
+  //   requestAnimationFrame(raf);
+  // });
 
   if (!mounted) {
     return null;

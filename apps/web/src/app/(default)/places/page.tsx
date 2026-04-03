@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BookingDialog } from '@/components/feature';
 import { MapPin, Navigation, Search, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
 
 function haversineKm(
   lat1: number,
@@ -269,12 +270,23 @@ const PlacesPage: React.FC = () => {
                 key={place.id}
                 className='border rounded-xl p-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer'
               >
+
                 {/* Image placeholder */}
-                <div className='h-[180px] bg-primary/10 flex items-center justify-center'>
-                  <span className='text-5xl'>
-                    {place.type === 'monument' ? '🏛️' : '🖼️'}
-                  </span>
-                </div>
+                {place.images[0] ? (
+                  <div className='h-[180px] bg-primary/10 relative flex items-center justify-center'>
+                    <Image
+                      src={place.images[0]!}
+                      blurDataURL=''
+                      alt='heroImage'
+                      fill
+                      unoptimized
+                      className='object-cover object-top  rounded-lg'
+                    />
+                  </div>
+                ) : (
+                  <div className='h-[180px] bg-primary/10 flex items-center justify-center' />
+                )}
+
 
                 {/* Content */}
                 <div className='p-4 flex flex-col gap-2'>

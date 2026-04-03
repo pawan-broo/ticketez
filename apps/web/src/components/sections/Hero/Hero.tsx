@@ -15,7 +15,7 @@ export const Hero: React.FC = () => {
     'Introducing Ticketez, an effortless ticket booking experience on your fingertips. Visit monuments while we take care of the hassle of bookings.';
 
   return (
-    <div className='w-full h-screen flex flex-col '>
+    <div className='w-full min-h-screen flex flex-col '>
       <div className='flex w-full  flex-col h-full  items-center justify-center border-b'>
         <div className='container flex flex-col  relative items-center gap-8 border-x h-full justify-center pt-20 p-12'>
           <div className='w-full h-full absolute top-0  left-0 grid grid-cols-20 grid-rows-8'>

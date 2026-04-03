@@ -16,7 +16,7 @@ export const Prank: React.FC = () => {
   };
 
   return (
-    <div className='w-full h-screen flex justify-center items-center'>
+    <div className='w-full min-h-screen flex justify-center items-center'>
       <audio
         ref={audioRef}
         src='/prank.mp3'

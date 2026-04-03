@@ -28,6 +28,7 @@ import { BookingDialog } from '@/components/feature/BookingDialog';
 import { trpc } from '@/utils/trpc';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 function SearchPageInner() {
   const router = useRouter();
@@ -240,20 +241,41 @@ function SearchPageInner() {
               </section>
             </section>
 
+
+
+
             <div className='grid grid-cols-2 gap-12'>
               <div className='grid grid-cols-3 gap-1 h-fit'>
-                {placeData.images.map((_, index) => (
-                  <div
-                    key={`img-${index}`}
-                    className='w-full h-[150px] rounded-xl bg-primary/40'
-                  />
-                ))}
-                {placeData.videos.map((_, index) => (
-                  <div
-                    key={`vid-${index}`}
-                    className='w-full h-[150px] rounded-xl bg-primary/40'
-                  />
-                ))}
+                {placeData.images.length > 0 ? (
+                  <>
+                    {placeData.images.map((image, index) => (
+                      <div
+                        key={`img-${index}`}
+                        className='w-full h-[150px] relative rounded-xl bg-primary/40'
+                      >
+                        <Image
+                          src={image}
+                          blurDataURL=''
+                          alt='image'
+                          fill
+                          unoptimized
+                          className='object-cover object-top rounded-lg '
+                        />
+                      </div>
+                    ))}
+                </>
+                ) : (
+                    <>
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <div
+                          key={`vid-${index}`}
+                          className='w-full h-[150px] rounded-xl bg-primary/40'
+                        />
+                      ))}
+
+                  </>
+                )}
+
               </div>
 
               <div className='flex flex-col gap-8'>
@@ -372,9 +394,22 @@ function SearchPageInner() {
                       onClick={() => router.push(url as Route)}
                       className='w-[400px] p-1 rounded-xl border flex gap-2 cursor-pointer hover:shadow-md transition-shadow'
                     >
-                      <div className='aspect-square w-[80px] bg-primary/40 rounded-lg shrink-0' />
-                      <div className='p-0.5 leading-tight flex flex-col gap-1'>
-                        <div className='flex items-center justify-between'>
+                      {place.images[0] ? (
+                        <div className='aspect-square w-[80px] bg-primary/40 rounded-lg shrink-0 relative' >
+                          <Image
+                            src={place.images[0]!}
+                            blurDataURL=''
+                            alt='heroImage'
+                            fill
+                            unoptimized
+                            className='object-cover object-top  rounded-lg'
+                          />
+                        </div>
+                      ) : (
+                        <div className='aspect-square w-[80px] bg-primary/40 rounded-lg shrink-0' />
+                      )}
+                      <div className='p-0.5 leading-tight w-full flex flex-col gap-1'>
+                        <div className='flex  items-center justify-between'>
                           <h1 className='font-medium'>{place.name}</h1>
                           <span
                             className={`self-start rounded-full px-2 py-0.5 text-xs font-medium ${
