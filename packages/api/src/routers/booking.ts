@@ -2,8 +2,9 @@ import { z } from 'zod';
 import { router, publicProcedure, protectedProcedure, adminProcedure } from '../index';
 import { db } from '@ticketez/db';
 import { booking, bookingMember } from '@ticketez/db/schema/booking';
+import { place } from '@ticketez/db/schema/places';
 import { user } from '@ticketez/db/schema/auth';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, inArray } from 'drizzle-orm';
 
 import { sendBookingPendingEmail, sendBookingConfirmedEmail } from '@ticketez/email';
 
@@ -112,9 +113,16 @@ export const bookingRouter = router({
         .from(bookingMember)
         .where(eq(bookingMember.bookingId, input.bookingId));
 
+      const [placeData] = await db
+        .select({ images: place.images })
+        .from(place)
+        .where(eq(place.slug, bookingData.placeSlug))
+        .limit(1);
+
       return {
         booking: bookingData,
         members,
+        placeImages: placeData?.images ?? [],
       };
     }),
 
@@ -127,7 +135,25 @@ export const bookingRouter = router({
       .where(eq(booking.userId, userId))
       .orderBy(desc(booking.createdAt));
 
-    return bookings;
+    const slugs = [...new Set(bookings.map((b) => b.placeSlug))];
+
+    const placeImages: Record<string, string[]> = {};
+
+    if (slugs.length > 0) {
+      const places = await db
+        .select({ slug: place.slug, images: place.images })
+        .from(place)
+        .where(inArray(place.slug, slugs));
+
+      for (const p of places) {
+        placeImages[p.slug] = p.images;
+      }
+    }
+
+    return bookings.map((b) => ({
+      ...b,
+      placeImages: placeImages[b.placeSlug] ?? [],
+    }));
   }),
 
   getAllBookings: adminProcedure

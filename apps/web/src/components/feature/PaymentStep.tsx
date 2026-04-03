@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { trpc } from '@/utils/trpc'
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 const QRCodeSVG = dynamic(
   () => import('qrcode.react').then((mod) => mod.QRCodeSVG),
@@ -110,22 +111,16 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
 
       {/* QR Code */}
       <div className='flex flex-col items-center gap-3'>
-        {upiVpa ? (
-          <div className='bg-white p-4 rounded-lg border inline-flex'>
-            <QRCodeSVG value={upiString} size={180} />
-          </div>
-        ) : (
-          <div className='w-[212px] h-[212px] border-2 border-dashed rounded-lg flex items-center justify-center text-sm text-muted-foreground text-center px-4'>
-            UPI QR code will appear here
-          </div>
-        )}
+        <div className='bg-white p-4 rounded-lg border inline-flex'>
+        <Image src="/qrcode.png" alt="qrcode" width={180} height={180} />
+        </div>
+
+
+
 
         <div className='text-center'>
-          <p className='text-xs text-muted-foreground'>
-            Or pay manually to this UPI ID
-          </p>
-          <p className='font-mono text-sm font-medium mt-0.5'>
-            {upiVpa || '—'}
+          <p className='text-sm text-muted-foreground'>
+UPI ID: parthsarathisharma02@oksbi
           </p>
         </div>
       </div>

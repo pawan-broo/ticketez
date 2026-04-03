@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { trpc } from '@/utils/trpc';
 
 const ActivityPage: React.FC = () => {
@@ -50,14 +51,29 @@ const ActivityPage: React.FC = () => {
           </p>
         </div>
 
+
+
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+
           {bookings.map((booking) => (
             <div
               key={booking.id}
               onClick={() => router.push(`/tickets/confirmation/${booking.id}`)}
               className='border rounded-lg p-3 flex flex-col gap-2 hover:shadow-lg transition-shadow cursor-pointer'
             >
-              <div className='w-full h-[200px] bg-primary/20 rounded-lg' />
+              {booking.placeImages && booking.placeImages.length > 0 ? (
+                <div className='w-full h-[200px] relative rounded-lg overflow-hidden bg-primary/20'>
+                  <Image
+                    src={booking.placeImages[0]!}
+                    alt={booking.placeName}
+                    fill
+                    unoptimized
+                    className='object-cover object-top'
+                  />
+                </div>
+              ) : (
+                <div className='w-full h-[200px] bg-primary/20 rounded-lg' />
+              )}
 
               <div className='px-2 flex flex-col'>
                 <h3 className='text-md font-semibold'>{booking.placeName}</h3>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, Users, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { trpc } from '@/utils/trpc';
@@ -57,7 +58,7 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
     );
   }
 
-  const { booking, members } = bookingData;
+  const { booking, members, placeImages } = bookingData;
 
   // const confirmationUrl = `${
   //   process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
@@ -83,12 +84,25 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
         <div className='grid grid-cols-3 gap-8'>
           <div className='col-span-2 flex flex-col gap-6'>
             <div className='border rounded-lg p-6 flex flex-col gap-4'>
-              <div className='grid grid-cols-4 gap-3'>
-                <div className='w-full h-[150px] bg-primary/20 rounded-lg' />
-                <div className='w-full h-[150px] bg-primary/20 rounded-lg' />
-                <div className='w-full h-[150px] bg-primary/20 rounded-lg' />
-                <div className='w-full h-[150px] bg-primary/20 rounded-lg' />
-              </div>
+              {placeImages.length > 0 && (
+                <div className='grid grid-cols-4 gap-3'>
+                  {placeImages.slice(0,4).map((image, index) => (
+                    <div
+                      key={`img-${index}`}
+                      className='w-full h-[150px] relative rounded-xl bg-primary/40'
+                    >
+                      <Image
+                        src={image}
+                        blurDataURL=''
+                        alt='image'
+                        fill
+                        unoptimized
+                        className='object-cover object-top   rounded-lg'
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
               <div>
                 <h2 className='text-xl font-semibold'>{booking.placeName}</h2>
                 <div className='flex items-start gap-2 text-muted-foreground'>
