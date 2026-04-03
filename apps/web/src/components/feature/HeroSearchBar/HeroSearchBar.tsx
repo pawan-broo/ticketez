@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { trpc } from '@/utils/trpc';
 import type { Route } from 'next';
+import Image from 'next/image';
 
 interface SearchResult {
   name: string;
@@ -14,6 +15,7 @@ interface SearchResult {
   type: 'Monument' | 'Museum';
   city: string;
   state: string;
+  image: string | undefined;
   country: string;
   location: string;
   destinationType: string;
@@ -59,6 +61,7 @@ export const HeroSearchBar: React.FC = () => {
       name: place.name,
       slug: place.slug,
       type: place.type === 'museum' ? 'Museum' : 'Monument',
+      image: place.images[0],
       city: place.city,
       state: place.state,
       country: place.country,
@@ -161,6 +164,7 @@ export const HeroSearchBar: React.FC = () => {
         </div>
       )}
 
+
       {/* Results dropdown */}
       {isOpen && !isLoading && searchResults.length > 0 && (
         <div className='absolute max-h-[400px] top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg overflow-y-scroll z-20'>
@@ -171,7 +175,21 @@ export const HeroSearchBar: React.FC = () => {
               className='w-full p-3 flex justify-between items-start hover:bg-accent/50 transition-colors text-left border-b last:border-b-0'
             >
               <div className='flex gap-2 items-center'>
-                <div className='size-8 bg-primary/20 rounded-sm' />
+                {result.image ? (
+                  <div className='size-8 bg-primary/20 rounded-sm relative' >
+                    <Image
+                      src={result.image}
+                      blurDataURL=''
+                      alt='heroImage'
+                      fill
+                      unoptimized
+                      className='object-cover object-top rounded-sm'
+                    />
+                  </div>
+                ) : (
+                  <div className='size-8 bg-primary/20 rounded-sm relative' >
+                  </div>
+                )}
                 <div>
                   <p className='font-medium leading-none text-sm'>
                     {result.name}
