@@ -18,8 +18,8 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className='flex min-h-screen w-full flex-col items-center'>
-      <div className='container flex flex-col items-center gap-8 h-full border-x mt-[100px] p-8'>
+    <div className='flex h-screen w-full flex-col items-center'>
+      <div className='container flex flex-col items-center gap-8 h-full border-x mt-[100px] p-4 sm:p-8'>
         <div className='container relative overflow-hidden h-full border rounded-lg flex flex-col justify-center items-center gap-6 py-12'>
           <div className='w-full h-full absolute  top-0 left-0  grid grid-cols-20 grid-rows-10'>
             {Array.from({ length: 200 }).map((_, index) => (
@@ -48,7 +48,7 @@ const Signup: React.FC = () => {
           </section>
 
           <Button
-            className='w-[400px] z-10'
+            className='w-full max-w-[400px] z-10'
             size='xl'
             disabled={isLoading}
             onClick={handleContinueWithGoogle}

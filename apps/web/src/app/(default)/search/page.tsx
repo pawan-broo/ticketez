@@ -107,7 +107,7 @@ function SearchPageInner() {
   if (isLoading) {
     return (
       <div className='flex w-full flex-col items-center justify-center border-b'>
-        <div className='container flex flex-col gap-8 border-x h-full py-[140px] px-12 animate-pulse'>
+        <div className='container flex flex-col gap-8 border-x h-full py-24 px-4 sm:py-32 sm:px-8 md:py-[140px] md:px-12 animate-pulse'>
           <div className='h-4 bg-muted rounded w-1/3' />
           <div className='flex justify-between items-start'>
             <div className='flex flex-col gap-2'>
@@ -120,8 +120,8 @@ function SearchPageInner() {
               <div className='h-9 bg-muted rounded w-28' />
             </div>
           </div>
-          <div className='grid grid-cols-2 gap-12'>
-            <div className='grid grid-cols-3 gap-1'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 gap-1'>
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className='h-[150px] bg-muted rounded-xl' />
               ))}
@@ -164,7 +164,7 @@ function SearchPageInner() {
   return (
     <>
       <div className='flex w-full flex-col items-center justify-center border-b'>
-        <div className='container flex flex-col gap-5 border-x h-full py-[140px] px-12'>
+        <div className='container flex flex-col gap-5 border-x h-full py-24 px-4 sm:py-32 sm:px-8 md:py-[140px] md:px-12'>
           <p>
             Looking results for &nbsp;
             <Badge variant='outline' className='font-normal'>
@@ -185,7 +185,7 @@ function SearchPageInner() {
           </p>
 
           <div className='flex flex-col gap-8'>
-            <section className='w-full flex justify-between'>
+            <section className='w-full flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0'>
               <section className='leading-tight'>
                 <h1 className='text-2xl font-semibold'>{placeData.name}</h1>
                 <p className='text-muted-foreground mt-1 flex items-center gap-2 leading-none'>
@@ -209,7 +209,7 @@ function SearchPageInner() {
                 </p>
               </section>
 
-              <section className='gap-2 flex'>
+              <section className='flex flex-wrap gap-2'>
                 <Button
                   variant='outline'
                   size='sm'
@@ -244,14 +244,14 @@ function SearchPageInner() {
 
 
 
-            <div className='grid grid-cols-2 gap-12'>
-              <div className='grid grid-cols-3 gap-1 h-fit'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12'>
+              <div className='grid grid-cols-2 sm:grid-cols-3 gap-1 h-fit'>
                 {placeData.images.length > 0 ? (
                   <>
                     {placeData.images.map((image, index) => (
                       <div
                         key={`img-${index}`}
-                        className='w-full h-[150px] relative rounded-xl bg-primary/40'
+                        className='w-full h-[150px] re  lative rounded-xl bg-primary/40'
                       >
                         <Image
                           src={image}
@@ -302,7 +302,7 @@ function SearchPageInner() {
                       </p>
                     </AccordionTrigger>
                     <AccordionContent className='px-5 pt-4'>
-                      <div className='grid grid-cols-2 gap-3'>
+                      <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
                         {(placeData.metadata ?? []).map((meta, index) => (
                           <div key={index} className='flex flex-col'>
                             <p className='text-sm text-muted-foreground'>
@@ -365,7 +365,7 @@ function SearchPageInner() {
       {/* Similar places */}
       {filteredSimilar.length > 0 && (
         <div className='flex w-full flex-col items-center justify-center border-b'>
-          <div className='container flex flex-col items-center gap-8 border-x h-full py-[80px] px-12'>
+          <div className='container flex flex-col items-center gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
             <section className='flex flex-col items-center gap-1'>
               <p className='font-medium text-xl'>Similar places to visit</p>
               <p>
@@ -385,14 +385,14 @@ function SearchPageInner() {
             </section>
 
             <section className='flex justify-center w-full'>
-              <section className='grid grid-cols-2 gap-3'>
+              <section className='grid grid-cols-1 sm:grid-cols-2 gap-3 w-full'>
                 {filteredSimilar.map((place, index) => {
                   const url = `/search?country=${encodeURIComponent(place.country.toLowerCase())}&state=${encodeURIComponent(place.state.toLowerCase())}&city=${encodeURIComponent(place.city.toLowerCase())}&lookFor=${place.slug}&destinationType=${place.type}`;
                   return (
                     <div
                       key={index}
                       onClick={() => router.push(url as Route)}
-                      className='w-[400px] p-1 rounded-xl border flex gap-2 cursor-pointer hover:shadow-md transition-shadow'
+                      className='w-full p-1 rounded-xl border flex gap-2 cursor-pointer hover:shadow-md transition-shadow'
                     >
                       {place.images[0] ? (
                         <div className='aspect-square w-[80px] bg-primary/40 rounded-lg shrink-0 relative' >

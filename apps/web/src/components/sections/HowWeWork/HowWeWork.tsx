@@ -15,7 +15,7 @@ export const HowWeWork: React.FC = () => {
 
   return (
     <div className='flex w-full   flex-col   items-center justify-center border-b'>
-      <div className='container  flex flex-col  items-center gap-8 border-x h-full justify-center  py-[80px] px-12'>
+      <div className='container  flex flex-col  items-center gap-8 border-x h-full justify-center  py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         <p className='text-muted-foreground gap-2 hover:gap-5 duration-100 cursor-default leading-none flex items-center'>
           <span className='mt-0.5'>[</span>
           <span>How we Work</span>
@@ -43,7 +43,7 @@ export const HowWeWork: React.FC = () => {
                     duration: 0.5,
                     ease: cubicBezier(0.7, 0.1, 0.01, 1),
                   }}
-                  className='text-[40px] text-primary  font-flagfies  text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
+                  className='text-[28px] sm:text-[36px] md:text-[40px] text-primary  font-flagfies  text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
                 >
                   {value}&nbsp;
                 </motion.span>
@@ -80,11 +80,11 @@ export const HowWeWork: React.FC = () => {
           </p>
         </div>
 
-        <div className='flex justify-center flex-wrap gap-8'>
+        <div className='w-full grid grid-cols-1 sm:grid-cols-3 gap-6'>
           {howWeWorkSteps.map((step, index) => (
             <div
               key={index}
-              className='w-[250px] p-4 border flex gap-5 flex-col justify-between rounded-lg'
+              className='w-full p-4 border flex gap-5 flex-col justify-between rounded-lg'
             >
               <div className='flex flex-col gap-5'>
                 <div className='flex justify-center items-center size-12 bg-primary rounded-sm'>

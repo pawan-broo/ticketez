@@ -10,8 +10,8 @@ export const Vision: React.FC = () => {
     'We have made it easy for you to book tickets for monuments and museums and more. Our platform is built to give you fast, secure and hassle-free way to enjoy the destinations you love.';
 
   return (
-    <div className='flex w-full  min-h-[50vh] flex-col   items-center justify-center border-b'>
-      <div className='container  flex flex-col  items-center gap-8 border-x h-full justify-center  p-12'>
+    <div className='flex w-full   flex-col   items-center justify-center border-b'>
+      <div className='container min-h-[50vh]  flex flex-col  items-center gap-8 border-x h-full justify-center  p-4 sm:p-8 md:p-12'>
         <p className='text-muted-foreground gap-2 hover:gap-5 duration-100 cursor-default leading-none flex items-center'>
           <span className='mt-0.5'>[</span>
           <span>Our Vision</span>
@@ -38,7 +38,7 @@ export const Vision: React.FC = () => {
                   duration: 0.5,
                   ease: cubicBezier(0.7, 0.1, 0.01, 1),
                 }}
-                className='text-[40px] text-primary text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
+                className='text-[24px] sm:text-[32px] md:text-[40px] text-primary text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
               >
                 {value}&nbsp;
               </motion.span>

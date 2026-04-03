@@ -29,9 +29,11 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${satoshi.className} antialiased`}>
         <Providers>
-          <div className='grid grid-rows-[auto_1fr] h-svh'>
+          <div className='flex flex-col min-h-svh'>
             <Header />
-            {children}
+            <div className='flex-1'>
+              {children}
+            </div>
             <Footer />
           </div>
         </Providers>

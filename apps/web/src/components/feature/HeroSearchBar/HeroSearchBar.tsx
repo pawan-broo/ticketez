@@ -133,11 +133,11 @@ export const HeroSearchBar: React.FC = () => {
   };
 
   return (
-    <div className='relative' ref={dropdownRef}>
+    <div className='relative w-full max-w-[400px]' ref={dropdownRef}>
       <Input
         ref={inputRef}
         placeholder='Search by name, city or state'
-        className='w-[400px] rounded-lg px-5 bg-background py-6'
+        className='w-full rounded-lg px-5 bg-background py-6'
         value={query}
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
@@ -151,7 +151,7 @@ export const HeroSearchBar: React.FC = () => {
 
       {/* Loading skeleton */}
       {isOpen && isLoading && (
-        <div className='absolute top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg z-20 p-3 flex flex-col gap-3'>
+        <div className='absolute top-full mt-2 w-full bg-background border rounded-lg shadow-lg z-20 p-3 flex flex-col gap-3'>
           {[1, 2, 3].map((i) => (
             <div key={i} className='flex items-center gap-3 animate-pulse'>
               <div className='size-8 bg-muted rounded-sm shrink-0' />
@@ -167,7 +167,7 @@ export const HeroSearchBar: React.FC = () => {
 
       {/* Results dropdown */}
       {isOpen && !isLoading && searchResults.length > 0 && (
-        <div className='absolute max-h-[400px] top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg overflow-y-scroll z-20'>
+        <div className='absolute max-h-[400px] top-full mt-2 w-full bg-background border rounded-lg shadow-lg overflow-y-scroll z-20'>
           {searchResults.map((result, index) => (
             <button
               key={`${result.slug}-${index}`}
@@ -208,7 +208,7 @@ export const HeroSearchBar: React.FC = () => {
 
       {/* No results */}
       {isOpen && !isLoading && query.trim() && searchResults.length === 0 && (
-        <div className='absolute top-full mt-2 w-[400px] bg-background border rounded-lg shadow-lg z-50'>
+        <div className='absolute top-full mt-2 w-full bg-background border rounded-lg shadow-lg z-50'>
           <button
             onClick={handleNoResultsClick}
             className='w-full p-4 hover:bg-accent/50 transition-colors text-left'

@@ -18,7 +18,7 @@ export default function AdminLayout({
     <html lang='en'>
       <body className={`${satoshi.className} antialiased`}>
         <Providers>
-          <div className='flex h-screen bg-background'>
+          <div className='flex flex-col md:flex-row h-screen bg-background'>
             <AdminSidebar />
             <main className='flex-1 overflow-y-auto'>{children}</main>
           </div>

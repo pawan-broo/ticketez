@@ -1,10 +1,19 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Auto-generated seed data — exported from the database on 2026-04-03T20:15:13.154Z
+// Total places: 20 (10 monuments, 10 museums)
+//
+// Usage:
+//   1. Replace the `places` array in packages/db/src/seed.ts with this data.
+//   2. Run:  pnpm --filter @ticketez/db db:seed
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import { place } from './schema/places';
 
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import  { place } from './src';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -824,11 +833,11 @@ const places: (typeof place.$inferInsert)[] = [
       isActive: true,
     },
 ];
-// Seed runner
-// ---------------------------------------------------------------------------
+
+// ─── Seed runner ─────────────────────────────────────────────────────────────
 
 async function seed() {
-  console.log('🌱  Starting database seed...\n');
+  console.log('🌱  Starting database seed…\n');
 
   let inserted = 0;
   let skipped = 0;
@@ -838,9 +847,30 @@ async function seed() {
       await db
         .insert(place)
         .values(p)
-        .onConflictDoNothing({ target: place.slug });
+        .onConflictDoUpdate({
+          target: place.slug,
+          set: {
+            name: p.name,
+            type: p.type,
+            country: p.country,
+            state: p.state,
+            city: p.city,
+            location: p.location,
+            latitude: p.latitude,
+            longitude: p.longitude,
+            googleMapLink: p.googleMapLink,
+            images: p.images,
+            videos: p.videos,
+            shortDesc: p.shortDesc,
+            longDesc: p.longDesc,
+            precautionAndSafety: p.precautionAndSafety,
+            metadata: p.metadata,
+            ticketPrice: p.ticketPrice,
+            isActive: p.isActive,
+          },
+        });
 
-      console.log(`  ✅  ${p.type.padEnd(8)}  ${p.name}  (${p.city}) — ₹${(p.ticketPrice ?? 0) / 100}`);
+      console.log(`  ✅  ${p.type!.padEnd(8)}  ${p.name}  (${p.city}) — ₹${(p.ticketPrice ?? 0) / 100}`);
       inserted++;
     } catch (err) {
       console.warn(`  ⚠️   Skipped "${p.name}" — ${(err as Error).message}`);
@@ -848,13 +878,11 @@ async function seed() {
     }
   }
 
-  console.log(`\n🏁  Seed complete — ${inserted} inserted, ${skipped} skipped.\n`);
-
+  console.log(`\n🏁  Seed complete — ${inserted} upserted, ${skipped} skipped.\n`);
   await pool.end();
 }
 
 seed().catch((err) => {
   console.error('❌  Seed failed:', err);
-  pool.end();
   process.exit(1);
 });

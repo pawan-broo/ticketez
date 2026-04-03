@@ -4,7 +4,7 @@ import { db } from '@ticketez/db';
 import { booking } from '@ticketez/db/schema/booking';
 
 import { user } from '@ticketez/db/schema/auth';
-import { eq, count, sum, sql, desc } from 'drizzle-orm';
+import { eq, count, sum, sql, desc, and, gte, lt } from 'drizzle-orm';
 
 export const adminRouter = router({
   getStats: adminProcedure.query(async () => {
@@ -114,5 +114,71 @@ export const adminRouter = router({
         .limit(input.limit);
 
       return bookings;
+    }),
+
+  getBookingChartData: adminProcedure
+    .input(z.object({ month: z.number().int().min(1).max(12), year: z.number().int().min(2020).max(2100) }))
+    .query(async ({ input }) => {
+      const { month, year } = input;
+      const start = new Date(year, month - 1, 1);
+      const end = new Date(year, month, 1);
+
+      const rows = await db
+        .select({
+          date: sql<string>`DATE(${booking.bookingDate})::text`,
+          total: sql<number>`COUNT(*)::int`,
+          pending: sql<number>`COUNT(CASE WHEN ${booking.status} = 'pending' THEN 1 END)::int`,
+          confirmed: sql<number>`COUNT(CASE WHEN ${booking.status} = 'confirmed' THEN 1 END)::int`,
+          cancelled: sql<number>`COUNT(CASE WHEN ${booking.status} = 'cancelled' THEN 1 END)::int`,
+          unverifiedPayment: sql<number>`COUNT(CASE WHEN ${booking.paymentStatus} = 'unverified' THEN 1 END)::int`,
+        })
+        .from(booking)
+        .where(and(gte(booking.bookingDate, start), lt(booking.bookingDate, end)))
+        .groupBy(sql`DATE(${booking.bookingDate})`)
+        .orderBy(sql`DATE(${booking.bookingDate})`);
+
+      return rows;
+    }),
+
+  getRevenueChartData: adminProcedure
+    .input(z.object({ month: z.number().int().min(1).max(12), year: z.number().int().min(2020).max(2100) }))
+    .query(async ({ input }) => {
+      const { month, year } = input;
+      const start = new Date(year, month - 1, 1);
+      const end = new Date(year, month, 1);
+
+      const rows = await db
+        .select({
+          date: sql<string>`DATE(${booking.bookingDate})::text`,
+          revenue: sql<number>`COALESCE(SUM(CASE WHEN ${booking.paymentStatus} = 'verified' THEN ${booking.totalAmount} ELSE 0 END), 0)::int`,
+        })
+        .from(booking)
+        .where(and(gte(booking.bookingDate, start), lt(booking.bookingDate, end)))
+        .groupBy(sql`DATE(${booking.bookingDate})`)
+        .orderBy(sql`DATE(${booking.bookingDate})`);
+
+      return rows;
+    }),
+
+  getPlacePerformanceChartData: adminProcedure
+    .input(z.object({ month: z.number().int().min(1).max(12), year: z.number().int().min(2020).max(2100) }))
+    .query(async ({ input }) => {
+      const { month, year } = input;
+      const start = new Date(year, month - 1, 1);
+      const end = new Date(year, month, 1);
+
+      const rows = await db
+        .select({
+          date: sql<string>`DATE(${booking.bookingDate})::text`,
+          placeName: booking.placeName,
+          bookings: sql<number>`COUNT(*)::int`,
+          members: sql<number>`COALESCE(SUM(${booking.totalMembers}), 0)::int`,
+        })
+        .from(booking)
+        .where(and(gte(booking.bookingDate, start), lt(booking.bookingDate, end)))
+        .groupBy(sql`DATE(${booking.bookingDate})`, booking.placeName)
+        .orderBy(sql`DATE(${booking.bookingDate})`);
+
+      return rows;
     }),
 });

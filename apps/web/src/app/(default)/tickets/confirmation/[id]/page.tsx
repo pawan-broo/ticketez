@@ -71,7 +71,7 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
 
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b'>
-      <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+      <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         <div className='flex items-center gap-3'>
           <div>
             <h1 className='text-2xl font-semibold'>Booking Confirmed!</h1>
@@ -81,11 +81,11 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
           </div>
         </div>
 
-        <div className='grid grid-cols-3 gap-8'>
-          <div className='col-span-2 flex flex-col gap-6'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8'>
+          <div className='lg:col-span-2 flex flex-col gap-6'>
             <div className='border rounded-lg p-6 flex flex-col gap-4'>
               {placeImages.length > 0 && (
-                <div className='grid grid-cols-4 gap-3'>
+                <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
                   {placeImages.slice(0,4).map((image, index) => (
                     <div
                       key={`img-${index}`}
@@ -138,7 +138,7 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
             <div className='border rounded-lg p-6 flex flex-col gap-4'>
               <h3 className='font-semibold'>Booking Information</h3>
 
-              <div className='grid grid-cols-2 gap-4'>
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                 <div>
                   <p className='text-sm text-muted-foreground'>Booking ID</p>
                   <p className='font-mono text-sm'>{booking.id}</p>
@@ -222,7 +222,7 @@ const ConfirmationPage: React.FC<ConfirmationPageProps> = ({ params }) => {
           </div>
 
           <div className='flex flex-col gap-4'>
-            <div className='border rounded-lg p-6 flex flex-col items-center gap-4 sticky top-[150px]'>
+            <div className='border rounded-lg p-6 flex flex-col items-center gap-4 sticky top-[80px]'>
               <h3 className='font-semibold'>Your Ticket QR Code</h3>
               <div className='bg-white p-4 rounded-lg'>
                 <QRCodeSVG value={confirmationUrl} size={200} />

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 const AboutPage: React.FC = () => {
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
-      <div className='container flex flex-col gap-12 border-x h-full py-[80px] px-12'>
+      <div className='container flex flex-col gap-12 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         {/* Hero Section */}
         <div className='flex flex-col gap-3'>
           <h1 className='text-4xl font-bold'>About Ticketez</h1>
@@ -17,7 +17,7 @@ const AboutPage: React.FC = () => {
         </div>
 
         {/* Our Mission */}
-        <div className='border rounded-lg p-8 flex flex-col gap-4'>
+        <div className='border rounded-lg p-5 sm:p-8 flex flex-col gap-4'>
           <h2 className='text-2xl font-semibold'>Our Mission</h2>
           <p className='text-muted-foreground leading-relaxed'>
             Ticketez was built to eliminate the friction of visiting India's incredible cultural
@@ -29,7 +29,7 @@ const AboutPage: React.FC = () => {
         {/* How It Works */}
         <div className='flex flex-col gap-6'>
           <h2 className='text-2xl font-semibold'>How It Works</h2>
-          <div className='grid grid-cols-3 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
             <div className='border rounded-lg p-6 flex flex-col gap-3'>
               <span className='text-3xl'>🔍</span>
               <h3 className='text-lg font-semibold'>Discover</h3>

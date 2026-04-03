@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Pencil, Check, X, UserCircle } from 'lucide-react';
+import Image from 'next/image';
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
@@ -95,7 +96,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
-      <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+      <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         {/* Page Header */}
         <div>
           <h1 className='text-3xl font-bold'>My Profile</h1>
@@ -105,7 +106,7 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* User Card */}
-        <div className='border rounded-lg p-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8'>
+        <div className='border rounded-lg p-5 sm:p-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8'>
           <Avatar className='size-20 shrink-0'>
             <AvatarImage
               src={user.image ?? undefined}
@@ -173,7 +174,7 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* Stats Strip */}
-        <div className='grid grid-cols-4 gap-4'>
+        <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
           {[
             { label: 'Total Bookings', value: totalBookings },
             { label: 'Confirmed', value: confirmedBookings },
@@ -207,7 +208,7 @@ const ProfilePage: React.FC = () => {
           </div>
 
           {bookingsLoading ? (
-            <div className='grid grid-cols-4 gap-6'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
@@ -229,7 +230,7 @@ const ProfilePage: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <div className='grid grid-cols-4 gap-6'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
               {recentBookings.map((booking) => (
                 <div
                   key={booking.id}
@@ -238,7 +239,19 @@ const ProfilePage: React.FC = () => {
                   }
                   className='border rounded-lg p-3 flex flex-col gap-2 hover:shadow-lg transition-shadow cursor-pointer'
                 >
-                  <div className='w-full h-[200px] bg-primary/20 rounded-lg' />
+                  {booking.placeImages && booking.placeImages.length > 0 ? (
+                    <div className='w-full h-[200px] rounded-lg relative overflow-hidden bg-primary/20'>
+                      <Image
+                        src={booking.placeImages[0]!}
+                        alt={booking.placeName}
+                        fill
+                        unoptimized
+                        className='object-cover object-top'
+                      />
+                    </div>
+                  ) : (
+                    <div className='w-full h-[200px] bg-primary/20 rounded-lg' />
+                  )}
                   <div className='px-2 flex flex-col'>
                     <h3 className='text-md font-semibold'>
                       {booking.placeName}

@@ -110,7 +110,7 @@ export const BookingInfoStep: React.FC<BookingInfoStepProps> = ({ onNext }) => {
               )}
             </div>
 
-            <div className='grid grid-cols-3 gap-3'>
+            <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
               <div className='flex flex-col gap-1'>
                 <Label htmlFor={`name-${member.id}`}>Name</Label>
                 <Input

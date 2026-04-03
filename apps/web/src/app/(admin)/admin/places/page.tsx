@@ -583,7 +583,7 @@ export default function AdminPlacesPage() {
 
   return (
     <AdminGuard>
-      <div className='container border-x min-h-full px-12 py-[80px] space-y-8'>
+      <div className='container border-x min-h-full px-4 py-10 sm:px-8 sm:py-16 md:px-12 md:py-[80px] space-y-8'>
       {/* ── Page Header ─────────────────────────────────────────────────────── */}
       <div className='flex items-center justify-between gap-4'>
         <div>

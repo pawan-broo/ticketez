@@ -59,7 +59,7 @@ const AdminLoginPage: React.FC = () => {
 
           {/* Google Sign In */}
           <Button
-            className='w-[400px] z-10'
+            className='w-full max-w-[400px] z-10'
             size='xl'
             disabled={isLoading}
             onClick={handleContinueWithGoogle}

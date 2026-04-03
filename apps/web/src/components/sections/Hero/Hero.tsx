@@ -15,9 +15,9 @@ export const Hero: React.FC = () => {
     'Introducing Ticketez, an effortless ticket booking experience on your fingertips. Visit monuments while we take care of the hassle of bookings.';
 
   return (
-    <div className='w-full min-h-screen flex flex-col '>
+    <div className='w-full h-screen flex flex-col '>
       <div className='flex w-full  flex-col h-full  items-center justify-center border-b'>
-        <div className='container flex flex-col  relative items-center gap-8 border-x h-full justify-center pt-20 p-12'>
+        <div className='container flex flex-col  relative items-center gap-8 border-x h-full justify-center pt-16 p-4 sm:p-8 md:p-12'>
           <div className='w-full h-full absolute top-0  left-0 grid grid-cols-20 grid-rows-8'>
             {Array.from({ length: 160 }).map((_, index) => (
               <motion.div
@@ -59,7 +59,7 @@ export const Hero: React.FC = () => {
                       duration: 0.5,
                       ease: cubicBezier(0.7, 0.1, 0.01, 1),
                     }}
-                    className='text-[60px] font-flagfies text-primary text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
+                    className='text-[36px] sm:text-[48px] md:text-[60px] font-flagfies text-primary text-center leading-tight relative inline-flex flex-wrap overflow-hidden  '
                   >
                     {value}&nbsp;
                   </motion.span>

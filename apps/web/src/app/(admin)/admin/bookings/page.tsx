@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import * as XLSX from 'xlsx';
 
 import {
   Search,
@@ -9,6 +10,7 @@ import {
   XCircle,
   ExternalLink,
   RefreshCw,
+  Download,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { trpc } from '@/utils/trpc';
@@ -256,12 +258,47 @@ export default function AdminBookingsPage() {
     rejectMutation.mutate({ bookingId: booking.id, adminNote: '' });
   };
 
+  const handleExportExcel = () => {
+    if (!bookings || bookings.length === 0) return;
+
+    const rows = bookings.map((b) => ({
+      'Booking ID': b.id,
+      'User Name': b.userName ?? 'Unknown',
+      'User Email': b.userEmail ?? '',
+      'Place Name': b.placeName,
+      'City': b.city,
+      'State': b.state,
+      'Visit Date': b.visitDate ? new Date(b.visitDate).toLocaleDateString('en-IN') : '—',
+      'Booking Date': new Date(b.bookingDate ?? b.createdAt).toLocaleDateString('en-IN'),
+      'Members': b.totalMembers,
+      'Amount (₹)': (b.totalAmount / 100).toFixed(2),
+      'Transaction ID': b.transactionId ?? '—',
+      'Booking Status': b.status === 'confirmed' ? '✅ Confirmed' : b.status === 'cancelled' ? '❌ Cancelled' : '⏳ Pending',
+      'Payment Status': b.paymentStatus === 'verified' ? '✅ Verified' : b.paymentStatus === 'failed' ? '❌ Failed' : '⚠️ Unverified',
+      'Admin Note': b.adminNote ?? '',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+
+    // Auto-width columns
+    const colWidths = Object.keys(rows[0] ?? {}).map((key) => ({
+      wch: Math.max(key.length, ...rows.map((r) => String(r[key as keyof typeof r] ?? '').length)) + 2,
+    }));
+    ws['!cols'] = colWidths;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Bookings');
+
+    const fileName = `ticketez-bookings-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
   const selectClass =
     'border-input h-9 rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-[color,box-shadow] min-w-[160px]';
 
   return (
     <AdminGuard>
-      <div className='container border-x min-h-full px-12 py-[80px] space-y-8'>
+      <div className='container border-x min-h-full px-4 py-10 sm:px-8 sm:py-16 md:px-12 md:py-[80px] space-y-8'>
       {/* ── Page Header ─────────────────────────────────────────────────────── */}
       <div className='flex items-center justify-between gap-4'>
         <div>
@@ -270,15 +307,26 @@ export default function AdminBookingsPage() {
             Manage and verify all bookings
           </p>
         </div>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => refetch()}
-          title='Refresh'
-        >
-          <RefreshCw className='size-4' />
-          Refresh
-        </Button>
+        <div className='flex items-center gap-2'>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={handleExportExcel}
+            disabled={!bookings || bookings.length === 0}
+          >
+            <Download className='size-4' />
+            Export Excel
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => refetch()}
+            title='Refresh'
+          >
+            <RefreshCw className='size-4' />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* ── Filters ─────────────────────────────────────────────────────────── */}

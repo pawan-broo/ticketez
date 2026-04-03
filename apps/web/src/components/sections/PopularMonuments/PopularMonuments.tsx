@@ -41,14 +41,14 @@ export const PopularMonuments: React.FC = () => {
 
   return (
     <div className='flex w-full flex-col items-center justify-center border-b'>
-      <div className='container bg-primary flex flex-col items-center gap-8 border-x h-full justify-center py-[80px] px-12'>
+      <div className='container bg-primary flex flex-col items-center gap-8 border-x h-full justify-center py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         <p className='text-secondary gap-2 hover:gap-5 duration-100 cursor-default leading-none flex items-center'>
           <span className='mt-0.5'>[</span>
           <span>Popular Monuments to Visit</span>
           <span className='mt-0.5'>]</span>
         </p>
 
-        <div className='w-full grid grid-cols-4 gap-5'>
+        <div className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5'>
           {/* Loading skeletons */}
           {isLoading &&
             Array.from({ length: SKELETON_COUNT }).map((_, i) => (

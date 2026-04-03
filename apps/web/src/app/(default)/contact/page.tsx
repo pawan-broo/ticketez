@@ -56,7 +56,7 @@ const ContactPage: React.FC = () => {
 
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
-      <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+      <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         {/* Hero */}
         <div>
           <h1 className='text-3xl font-bold'>Get in Touch</h1>
@@ -66,7 +66,7 @@ const ContactPage: React.FC = () => {
         </div>
 
         {/* Two-column grid */}
-        <div className='grid grid-cols-2 gap-12'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12'>
           {/* Left — Contact Info */}
           <div className='flex flex-col gap-6'>
             {/* Email */}
@@ -123,7 +123,7 @@ const ContactPage: React.FC = () => {
           </div>
 
           {/* Right — Contact Form */}
-          <div className='border rounded-lg p-8'>
+          <div className='border rounded-lg p-5 sm:p-8'>
             {submitted ? (
               <div className='flex flex-col items-center justify-center h-full gap-4 py-12'>
                 <span className='text-4xl'>✅</span>

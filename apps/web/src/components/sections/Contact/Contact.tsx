@@ -16,7 +16,7 @@ export const Contact: React.FC = () => {
   return (
     <div className='w-full flex flex-col '>
       <div className='flex w-full  flex-col h-full  items-center justify-center border-b'>
-        <div className='container flex flex-col relative overflow-hidden items-center gap-5 border-x h-full justify-center pt-20 p-12'>
+        <div className='container flex flex-col relative overflow-hidden items-center gap-5 border-x h-full justify-center pt-16 p-4 sm:p-8 md:p-12'>
           <p className='text-muted-foreground gap-2 hover:gap-5 duration-100 cursor-default leading-none flex items-center'>
             <span className='mt-0.5'>[</span>
             <span>Reach Out</span>
@@ -61,7 +61,7 @@ export const Contact: React.FC = () => {
                       duration: 0.5,
                       ease: cubicBezier(0.7, 0.1, 0.01, 1),
                     }}
-                    className='text-primary font-flagfies  font-medium text-center text-[40px] relative inline-flex flex-wrap overflow-hidden  '
+                    className='text-primary font-flagfies  font-medium text-center text-[28px] sm:text-[36px] md:text-[40px] relative inline-flex flex-wrap overflow-hidden  '
                   >
                     {value}&nbsp;
                   </motion.span>

@@ -20,7 +20,7 @@ const ActivityPage: React.FC = () => {
   if (!bookings || bookings.length === 0) {
     return (
       <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b min-h-screen'>
-        <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+        <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
           <div>
             <h1 className='text-3xl font-bold'>My Activity</h1>
             <p className='text-muted-foreground mt-2'>
@@ -43,7 +43,7 @@ const ActivityPage: React.FC = () => {
 
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
-      <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+      <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         <div>
           <h1 className='text-3xl font-bold'>My Activity</h1>
           <p className='text-muted-foreground mt-2'>

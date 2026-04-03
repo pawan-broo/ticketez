@@ -120,7 +120,7 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminGuard>
-      <div className='container border-x min-h-full px-12 py-[80px] space-y-10'>
+      <div className='container border-x min-h-full px-4 py-10 sm:px-8 sm:py-16 md:px-12 md:py-[80px] space-y-10'>
       {/* Page header */}
       <div>
         <h1 className='text-3xl font-medium text-primary'>Dashboard</h1>

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { trpc } from '@/utils/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BookingDialog } from '@/components/feature';
-import { MapPin, Navigation, Search, AlertCircle } from 'lucide-react';
+import { MapPin, Navigation, Search, AlertCircle, LocateFixed } from 'lucide-react';
 import Image from 'next/image';
 
 function haversineKm(
@@ -27,6 +27,7 @@ function haversineKm(
 
 type TypeFilter = 'all' | 'monument' | 'museum';
 type SortBy = 'nearest' | 'name';
+type LocationStatus = 'loading' | 'granted' | 'denied' | 'unavailable' | 'unsupported';
 
 interface Place {
   id: string;
@@ -53,23 +54,25 @@ interface Place {
 }
 
 const PlacesPage: React.FC = () => {
-  const [userCoords, setUserCoords] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [locationLoading, setLocationLoading] = useState(true);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>('loading');
+  const [locationMessage, setLocationMessage] = useState<string>('');
+
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [sortBy, setSortBy] = useState<SortBy>('nearest');
   const [stateFilter, setStateFilter] = useState<string>('');
 
-  useEffect(() => {
+  const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by your browser.');
-      setLocationLoading(false);
+      setLocationStatus('unsupported');
+      setLocationMessage('Geolocation is not supported by your browser.');
       return;
     }
+
+    setLocationStatus('loading');
+    setLocationMessage('');
+    setUserCoords(null);
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -77,15 +80,42 @@ const PlacesPage: React.FC = () => {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         });
-        setLocationLoading(false);
+        setLocationStatus('granted');
+        setLocationMessage('');
       },
-      () => {
-        setLocationError('Location access denied. Showing all places.');
-        setLocationLoading(false);
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          setLocationStatus('denied');
+          setLocationMessage(
+            'Location access was denied. Grant access to see places nearest to you.',
+          );
+        } else if (error.code === error.TIMEOUT) {
+          setLocationStatus('denied');
+          setLocationMessage('Location request timed out. Please try again.');
+        } else {
+          setLocationStatus('unavailable');
+          setLocationMessage('Unable to determine your location. Showing all places.');
+        }
       },
+      { timeout: 10000, maximumAge: 0, enableHighAccuracy: false },
     );
   }, []);
 
+  useEffect(() => {
+    requestLocation();
+  }, [requestLocation]);
+
+  // Always fetch all places — used as the fallback (also pre-loads while GPS is pending)
+  const allQuery = trpc.places.getAll.useQuery(
+    {
+      type: typeFilter,
+      search: searchQuery || undefined,
+      state: stateFilter || undefined,
+    },
+    { staleTime: 30000 },
+  );
+
+  // Fetch nearby only when we have coordinates
   const nearbyQuery = trpc.places.getNearby.useQuery(
     {
       lat: userCoords?.lat ?? 0,
@@ -97,15 +127,6 @@ const PlacesPage: React.FC = () => {
     { enabled: !!userCoords },
   );
 
-  const allQuery = trpc.places.getAll.useQuery(
-    {
-      type: typeFilter,
-      search: searchQuery || undefined,
-      state: stateFilter || undefined,
-    },
-    { enabled: !userCoords },
-  );
-
   const allPlacesForFilter = trpc.places.getAll.useQuery(
     { limit: 200 },
     { staleTime: 60000 },
@@ -114,10 +135,13 @@ const PlacesPage: React.FC = () => {
     new Set((allPlacesForFilter.data ?? []).map((p) => p.state)),
   ).sort();
 
-  const places = userCoords ? nearbyQuery.data : allQuery.data;
-  const isLoading =
-    locationLoading ||
-    (userCoords ? nearbyQuery.isLoading : allQuery.isLoading);
+  // Use nearby results when coords are ready; fall back to all places otherwise
+  const places = userCoords ? (nearbyQuery.data ?? allQuery.data) : allQuery.data;
+
+  // Show skeleton only until we have the first batch of data — don't block on GPS
+  const isLoading = userCoords
+    ? nearbyQuery.isLoading && !allQuery.data
+    : allQuery.isLoading;
 
   const enriched = (places ?? [] as Place[]).map((p: Place) => ({
     ...p,
@@ -128,19 +152,16 @@ const PlacesPage: React.FC = () => {
   }));
 
   const sorted = [...enriched].sort((a, b) => {
-    if (
-      sortBy === 'nearest' &&
-      a.distanceKm != null &&
-      b.distanceKm != null
-    ) {
+    if (sortBy === 'nearest' && a.distanceKm != null && b.distanceKm != null) {
       return a.distanceKm - b.distanceKm;
     }
     return a.name.localeCompare(b.name);
   });
 
   return (
-    <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
-      <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+    <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b'>
+      <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
+
         {/* Page Header */}
         <div>
           <h1 className='text-3xl font-bold'>Places Near Me</h1>
@@ -149,27 +170,37 @@ const PlacesPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Location Banner */}
-        {locationLoading && (
+        {/* Location Banners */}
+        {locationStatus === 'loading' && (
           <div className='flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300'>
             <Navigation className='size-4 shrink-0 animate-pulse' />
-            <span>Detecting your location...</span>
+            <span>Detecting your location…</span>
           </div>
         )}
 
-        {!locationLoading && locationError && (
-          <div className='flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300'>
-            <AlertCircle className='size-4 shrink-0' />
-            <span>{locationError}</span>
-          </div>
-        )}
-
-        {!locationLoading && userCoords && (
+        {locationStatus === 'granted' && (
           <div className='flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/40 dark:text-green-300'>
             <MapPin className='size-4 shrink-0' />
-            <span>
-              📍 Showing places sorted by distance from your location
-            </span>
+            <span>📍 Showing places sorted by distance from your location</span>
+          </div>
+        )}
+
+        {(locationStatus === 'denied' || locationStatus === 'unavailable') && (
+          <div className='flex flex-col sm:flex-row sm:items-center gap-3 ...'>
+            <div className='flex items-start gap-3 flex-1'>
+              <AlertCircle className='size-4 shrink-0 mt-0.5' />
+              <span>{locationMessage}</span>
+            </div>
+            {/* Show retry button for denied AND unavailable — remove the inner conditional */}
+            <Button
+              size='sm'
+              variant='outline'
+              className='shrink-0 border-amber-400 ...'
+              onClick={requestLocation}
+            >
+              <LocateFixed className='size-3.5' />
+              {locationStatus === 'denied' ? 'Grant Location Access' : 'Try Again'}
+            </Button>
           </div>
         )}
 
@@ -182,7 +213,9 @@ const PlacesPage: React.FC = () => {
               placeholder='Search places, cities...'
               className='pl-9'
               value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchQuery(e.target.value)
+              }
             />
           </div>
 
@@ -212,11 +245,7 @@ const PlacesPage: React.FC = () => {
                     : 'hover:bg-muted text-muted-foreground'
                 }`}
               >
-                {t === 'all'
-                  ? 'All'
-                  : t === 'monument'
-                    ? 'Monuments'
-                    : 'Museums'}
+                {t === 'all' ? 'All' : t === 'monument' ? 'Monuments' : 'Museums'}
               </button>
             ))}
           </div>
@@ -243,12 +272,9 @@ const PlacesPage: React.FC = () => {
 
         {/* Loading Skeleton */}
         {isLoading && (
-          <div className='grid grid-cols-4 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
             {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className='border rounded-xl overflow-hidden animate-pulse'
-              >
+              <div key={i} className='border rounded-xl overflow-hidden animate-pulse'>
                 <div className='h-[180px] bg-muted' />
                 <div className='p-4 flex flex-col gap-3'>
                   <div className='h-3 bg-muted rounded-full w-1/4' />
@@ -264,29 +290,27 @@ const PlacesPage: React.FC = () => {
 
         {/* Results Grid */}
         {!isLoading && sorted.length > 0 && (
-          <div className='grid grid-cols-4 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
             {sorted.map((place) => (
               <div
                 key={place.id}
                 className='border rounded-xl p-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer'
               >
-
-                {/* Image placeholder */}
+                {/* Image */}
                 {place.images[0] ? (
-                  <div className='h-[180px] bg-primary/10 relative flex items-center justify-center'>
+                  <div className='h-[180px] bg-primary/10 relative'>
                     <Image
                       src={place.images[0]!}
                       blurDataURL=''
-                      alt='heroImage'
+                      alt={place.name}
                       fill
                       unoptimized
-                      className='object-cover object-top  rounded-lg'
+                      className='object-cover object-top'
                     />
                   </div>
                 ) : (
-                  <div className='h-[180px] bg-primary/10 flex items-center justify-center' />
+                  <div className='h-[180px] bg-primary/10' />
                 )}
-
 
                 {/* Content */}
                 <div className='p-4 flex flex-col gap-2'>
@@ -328,11 +352,8 @@ const PlacesPage: React.FC = () => {
                       : `₹${place.ticketPrice / 100} per person`}
                   </p>
 
-                  {/* Book Tickets — stop propagation so card click doesn't fire */}
-                  <div
-                    className='mt-1'
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  {/* Book Tickets */}
+                  <div className='mt-1' onClick={(e) => e.stopPropagation()}>
                     <BookingDialog
                       placeSlug={place.slug}
                       placeName={place.name}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Bookmark, BookmarkX, ArrowUpRight } from 'lucide-react';
 import { trpc } from '@/utils/trpc';
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 const SavedPlacesPage: React.FC = () => {
   const router = useRouter();
@@ -21,6 +22,26 @@ const SavedPlacesPage: React.FC = () => {
   } = trpc.savedPlaces.getAll.useQuery(undefined, {
     enabled: !!session,
   });
+
+  // Fetch images for all saved places using their slugs
+  const savedSlugs = useMemo(
+    () => savedPlaces?.map((p) => p.placeSlug) ?? [],
+    [savedPlaces],
+  );
+
+  const { data: placeDetails } = trpc.places.getBySlugs.useQuery(
+    { slugs: savedSlugs },
+    { enabled: savedSlugs.length > 0, staleTime: 60000 },
+  );
+
+  // Build a slug → images lookup map
+  const placeImagesMap = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    placeDetails?.forEach((p) => {
+      map[p.slug] = p.images;
+    });
+    return map;
+  }, [placeDetails]);
 
   const unsaveMutation = trpc.savedPlaces.unsave.useMutation({
     onSuccess: () => {
@@ -48,9 +69,9 @@ const SavedPlacesPage: React.FC = () => {
 
   return (
     <div className='flex w-full flex-col pt-[50px] items-center justify-center border-b '>
-      <div className='container flex flex-col gap-8 border-x h-full py-[80px] px-12'>
+      <div className='container flex flex-col gap-8 border-x h-full py-10 px-4 sm:py-16 sm:px-8 md:py-[80px] md:px-12'>
         {/* Header */}
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3'>
           <div>
             <h1 className='text-3xl font-bold flex items-center gap-3'>
               <Bookmark className='size-7' />
@@ -122,15 +143,30 @@ const SavedPlacesPage: React.FC = () => {
                     key={place.id}
                     className='border rounded-lg p-3 flex flex-col gap-2 hover:shadow-lg transition-shadow group'
                   >
-                    {/* Image placeholder */}
-                    <div
-                      className='w-full h-[200px] bg-primary/10 rounded-lg flex items-center justify-center cursor-pointer'
-                      onClick={() => router.push(searchUrl as never)}
-                    >
-                      <span className='text-5xl'>
-                        {place.destinationType === 'monument' ? '🏛️' : '🖼️'}
-                      </span>
-                    </div>
+                    {/* Place image */}
+                    {placeImagesMap[place.placeSlug]?.[0] ? (
+                      <div
+                        className='w-full h-[200px] rounded-lg relative overflow-hidden bg-primary/10 cursor-pointer'
+                        onClick={() => router.push(searchUrl as never)}
+                      >
+                        <Image
+                          src={placeImagesMap[place.placeSlug]![0]!}
+                          alt={place.placeName}
+                          fill
+                          unoptimized
+                          className='object-cover object-top'
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className='w-full h-[200px] bg-primary/10 rounded-lg flex items-center justify-center cursor-pointer'
+                        onClick={() => router.push(searchUrl as never)}
+                      >
+                        <span className='text-5xl'>
+                          {place.destinationType === 'monument' ? '🏛️' : '🖼️'}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Info */}
                     <div className='px-1 flex flex-col gap-1.5'>
