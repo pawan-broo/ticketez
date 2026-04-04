@@ -251,7 +251,7 @@ function SearchPageInner() {
                     {placeData.images.map((image, index) => (
                       <div
                         key={`img-${index}`}
-                        className='w-full h-[150px] re  lative rounded-xl bg-primary/40'
+                        className='w-full h-[150px] relative rounded-xl bg-primary/40'
                       >
                         <Image
                           src={image}
