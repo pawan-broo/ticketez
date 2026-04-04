@@ -224,7 +224,7 @@ export default function AnalyticsPage() {
           </div>
           <Button size='sm' variant='outline' asChild>
             <a
-              href='https://public.tableau.com/authoring/Ticketez/Overview#1'
+              href='https://public.tableau.com/shared/6S8W9MMG6?:display_count=n&:origin=viz_share_link'
               target='_blank'
               rel='noopener noreferrer'
             >
